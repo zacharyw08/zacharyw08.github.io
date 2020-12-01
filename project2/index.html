@@ -61,7 +61,7 @@
         </div>
         <div class="blog-title">
           <h4>
-          January 1, 0001
+          November 22, 2020
             &nbsp;&nbsp;
             
           </h4>
@@ -192,7 +192,7 @@ summary(man1)</code></pre>
   pivot_longer(-1,names_to=&#39;DV&#39;, values_to=&#39;measure&#39;) %&gt;% ggplot(aes(position,measure,fill=position)) + 
   geom_bar(stat=&quot;summary&quot;)+geom_errorbar(stat=&quot;summary&quot;, width=.5) + facet_wrap(~DV, nrow=2) + 
   coord_flip() + ylab(&quot;&quot;) + theme(legend.position = &quot;none&quot;)</code></pre>
-<p><img src="../Project2_NBA_files/figure-html/unnamed-chunk-2-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p><img src="../project2_files/figure-html/unnamed-chunk-2-1.png" width="768" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>#Type I error occurence probability for 26 tests (1 MANOVA, 5 ANOVA, 20 t-tests)
 set.seed(348)
 Type1Error &lt;- replicate(5000,{
@@ -224,7 +224,7 @@ mean(Type1Error&gt;0)</code></pre>
 <h3>Randomization Test</h3>
 <pre class="r"><code>ggplot(raptor,aes(totalraptor,fill=position))+geom_histogram(bins=6.5)+
   facet_wrap(~position,ncol=2)+theme(legend.position=&quot;none&quot;)</code></pre>
-<p><img src="../Project2_NBA_files/figure-html/unnamed-chunk-3-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p><img src="../project2_files/figure-html/unnamed-chunk-3-1.png" width="768" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>raptor %&gt;% group_by(position) %&gt;% summarize(mean(totalraptor))</code></pre>
 <pre><code>## # A tibble: 5 x 2
 ##   position `mean(totalraptor)`
@@ -242,7 +242,7 @@ for(i in 1:5000){
 new &lt;- data.frame(totalraptor=sample(raptor$totalraptor), position=raptor$position)
 rand_dist[i] &lt;- mean(new[new$position == &quot;C&quot;,]$totalraptor) - mean(new[new$position == &quot;PF&quot;,]$totalraptor)} 
 {hist(rand_dist, main = &quot;&quot;, ylab = &quot;&quot;); abline(v = c(-1.5401, 1.5401), col = &quot;red&quot;)}</code></pre>
-<p><img src="../Project2_NBA_files/figure-html/unnamed-chunk-3-2.png" width="768" style="display: block; margin: auto;" /></p>
+<p><img src="../project2_files/figure-html/unnamed-chunk-3-2.png" width="768" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>mean(rand_dist &gt; 1.5401 | rand_dist &lt; -1.5401)</code></pre>
 <pre><code>## [1] 0.0068</code></pre>
 <pre class="r"><code>t.test(data=raptor,totalraptor~position==&quot;C&quot; | position ==&quot;PF&quot;)</code></pre>
@@ -300,14 +300,14 @@ raptor)
 ## F-statistic: 7.321 on 9 and 240 DF, p-value: 2.042e-09</code></pre>
 <pre class="r"><code>library(interactions)
 raptor %&gt;% ggplot(aes(minutes_c,totalraptor,color=position)) + geom_point() + geom_smooth(method=&quot;lm&quot;, se=F) + ggtitle(&quot;Linear Regression of Minutes Played and Position on Total RAPTOR&quot;) + xlab(&quot;Minutes Played (mean-centered)&quot;) + ylab(&quot;Total RAPTOR Score (points)&quot;) + labs(color=&quot;Basketball \nPosition&quot;)</code></pre>
-<p><img src="../Project2_NBA_files/figure-html/unnamed-chunk-4-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p><img src="../project2_files/figure-html/unnamed-chunk-4-1.png" width="768" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>#Assumptions for Linear Regression
 resids&lt;-fitraptor$residuals
 fitvals&lt;-fitraptor$fitted.values
 plot(fitvals,resids); abline(h=0, col=&#39;red&#39;)</code></pre>
-<p><img src="../Project2_NBA_files/figure-html/unnamed-chunk-4-2.png" width="768" style="display: block; margin: auto;" /></p>
+<p><img src="../project2_files/figure-html/unnamed-chunk-4-2.png" width="768" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>par(mfrow=c(1,2)); hist(resids); qqnorm(resids); qqline(resids, col=&#39;red&#39;)</code></pre>
-<p><img src="../Project2_NBA_files/figure-html/unnamed-chunk-4-3.png" width="768" style="display: block; margin: auto;" /></p>
+<p><img src="../project2_files/figure-html/unnamed-chunk-4-3.png" width="768" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>library(sandwich)
 library(lmtest)
 bptest(fitraptor)</code></pre>
@@ -535,11 +535,11 @@ table(predict=as.numeric(prob&gt;.5),truth=raptordata$y) %&gt;% addmargins</code
 <pre class="r"><code>raptordata$logit&lt;-predict(fitrap,type=&quot;link&quot;) #get predicted logit/log-odds for everyone
 
 raptordata %&gt;% ggplot() + geom_density(aes(logit,color=war_win,fill=war_win), alpha=.4) + theme(legend.position=c(.85,.85)) + geom_vline(xintercept=0) + xlab(&quot;logit (log-odds)&quot;) + geom_rug(aes(logit,color=war_win))</code></pre>
-<p><img src="../Project2_NBA_files/figure-html/unnamed-chunk-6-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p><img src="../project2_files/figure-html/unnamed-chunk-6-1.png" width="768" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>library(plotROC)
 ROCplot &lt;- ggplot(raptordata)+geom_roc(aes(d=war_win,m=prob), n.cuts=0) 
 ROCplot</code></pre>
-<p><img src="../Project2_NBA_files/figure-html/unnamed-chunk-6-2.png" width="768" style="display: block; margin: auto;" /></p>
+<p><img src="../project2_files/figure-html/unnamed-chunk-6-2.png" width="768" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>calc_auc(ROCplot)</code></pre>
 <pre><code>##   PANEL group       AUC
 ## 1     1    -1 0.8164667</code></pre>
