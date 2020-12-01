@@ -1,0 +1,25 @@
+---
+title: My first blog post
+author: Zachary
+date: '2020-12-01'
+slug: my-first-blog-post
+categories: []
+tags: []
+description: ''
+---
+
+#Hello there
+
+This is my first blog post on this project
+
+```{r}
+hist(iris$Sepal.Length)
+```
+
+```{python}
+string="mystring yay!"
+import re
+re.findall(r"y",string)
+```
+
+![](/post/2020-12-01-my-first-blog-post_files/IMG_9489.JPG){width=50%}

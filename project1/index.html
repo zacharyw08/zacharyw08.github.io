@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Zachary Wong" />
+    <meta name="description" content="Describe your website">
+    <link rel="shortcut icon" type="image/x-icon" href="../img/favicon.ico">
+    <title>SDS 348 Project 1: NBA Player Efficiency and Salaries </title>
+    <meta name="generator" content="Hugo 0.79.0" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="../css/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+  </head>
+
+  <body>
+    <div id="wrap">
+
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="../"><i class="fa fa-home"></i></a>
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <div class="navbar-collapse collapse" id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="../post/">BLOG</a></li>
+        
+        <li><a href="../projects/">PROJECTS</a></li>
+        
+        <li><a href="../resume/">RESUME</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      
+      <div class="container">
+        <div class="blog-post">
+          <h3>
+            <strong><a href="../project1/">SDS 348 Project 1: NBA Player Efficiency and Salaries </a></strong>
+          </h3>
+        </div>
+        <div class="blog-title">
+          <h4>
+          October 3, 2020
+            &nbsp;&nbsp;
+            
+          </h4>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              
+
+
+<div id="by-zachary-wong-zpw97" class="section level4">
+<h4>By: Zachary Wong zpw97</h4>
+</div>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<div id="the-datasets-that-i-chose-for-this-project-relate-to-nba-basketball-players.-i-chose-these-because-i-am-a-huge-fan-of-sports-especially-basketball.-i-often-find-myself-watching-games-and-intensely-evaluating-box-scores-for-players-statistics.-i-find-it-incredibly-interesting-to-see-how-players-statistics-points-rebounds-assists-fluctuate-over-the-course-of-the-season-and-throughout-their-careers.-these-statistics-often-reflect-a-players-worth-to-the-team-and-therefore-their-contracts-and-salaries.-this-project-is-a-great-opportunity-to-apply-what-i-have-learned-about-data-science-in-class-to-the-real-world-scenario-of-sports-that-i-enjoy-and-find-interesting.-these-datasets-contain-information-regarding-current-nba-players-offensive-defensive-and-total-efficiency-ratings-measured-by-a-metric-called-raptor-as-well-as-their-current-salaries-from-their-contracts.-i-predict-that-players-with-higher-salaries-will-have-higher-raptor-scores-implying-that-they-are-being-paid-more-due-to-the-fact-that-they-are-more-efficient-players.-additionally-i-predict-that-offensive-and-defensive-raptor-scores-will-not-be-directly-correlated-as-some-players-are-especially-proficient-on-only-side-of-the-court." class="section level4">
+<h4>The datasets that I chose for this project relate to NBA basketball players. I chose these because I am a huge fan of sports, especially basketball. I often find myself watching games and intensely evaluating box scores for players' statistics. I find it incredibly interesting to see how players statistics (points, rebounds, assists) fluctuate over the course of the season and throughout their careers. These statistics often reflect a player's worth to the team and therefore their contracts and salaries. This project is a great opportunity to apply what I have learned about data science in class to the real-world scenario of sports that I enjoy and find interesting. These datasets contain information regarding current NBA players' offensive, defensive, and total efficiency ratings measured by a metric called RAPTOR, as well as their current salaries from their contracts. I predict that players with higher salaries will have higher RAPTOR scores, implying that they are being paid more due to the fact that they are more efficient players. Additionally I predict that offensive and defensive RAPTOR scores will not be directly correlated, as some players are especially proficient on only side of the court.</h4>
+</div>
+<div id="one-dataset-that-i-chose-was-acquired-from-five-thirty-eight-a-website-with-many-datasets-related-to-sports-politics-economics-and-more.-the-dataset-examines-individual-player-efficiency-of-nba-basketball-players-by-using-a-metric-called-raptor-which-is-measured-in-basketball-points.-this-metric-was-created-by-five-thirty-eight-and-is-based-on-the-amount-of-points-the-player-is-directly-or-indirectly-responsible-for-while-in-the-game-on-both-offense-and-defense.-the-raptor-dataset-contains-many-variables-but-the-following-will-be-selectively-used-in-this-project-player-name-minutes-played-nba-team-offensive-raptor-score-defensive-raptor-score-and-total-raptor-score.-the-second-dataset-that-i-chose-was-acquired-from-the-hoops-hype-website.-this-dataset-details-the-players-yearly-salaries-for-this-past-season-20192020-through-the-20222023-season.-as-each-player-has-a-unique-contract-some-players-will-contain-values-of-0-for-salaries-in-the-next-few-years-if-their-current-contract-does-not-guarantee-a-salary-through-that-year.-the-dataset-contains-the-following-variables-player-name-201920-salary-202021-salary-202122-salary-and-202223-salary.-for-the-purpose-of-this-project-only-the-player-name-201920-salary-and-202021-salary-variables-are-used.-salaries-are-measured-in-us-dollars." class="section level4">
+<h4>One dataset that I chose was acquired from Five Thirty Eight, a website with many datasets related to sports, politics, economics, and more. The dataset examines individual player efficiency of NBA basketball players by using a metric called RAPTOR, which is measured in basketball points. This metric was created by Five Thirty Eight and is based on the amount of points the player is directly or indirectly responsible for while in the game on both offense and defense. The RAPTOR dataset contains many variables, but the following will be selectively used in this project: player name, minutes played, NBA team, offensive RAPTOR score, defensive RAPTOR score, and total RAPTOR score. The second dataset that I chose was acquired from the Hoops Hype website. This dataset details the players' yearly salaries for this past season (2019/2020) through the 2022/2023 season. As each player has a unique contract, some players will contain values of $0 for salaries in the next few years if their current contract does not guarantee a salary through that year. The dataset contains the following variables: player name, 2019/20 salary, 2020/21 salary, 2021/22 salary, and 2022/23 salary. For the purpose of this project only the player name, 2019/20 salary, and 2020/21 salary variables are used. Salaries are measured in US dollars.</h4>
+</div>
+</div>
+<div id="joiningmerging" class="section level2">
+<h2>Joining/Merging</h2>
+<pre class="r"><code>library(readr)
+library(tidyverse)</code></pre>
+<pre><code>## ── Attaching packages ────────────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
+<pre><code>## ✓ ggplot2 3.3.2     ✓ dplyr   1.0.1
+## ✓ tibble  3.0.3     ✓ stringr 1.4.0
+## ✓ tidyr   1.1.1     ✓ forcats 0.5.0
+## ✓ purrr   0.3.4</code></pre>
+<pre><code>## ── Conflicts ───────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>nba_raptor &lt;- read_csv(&quot;NBAPlayersRAPTOR.csv&quot;)</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   .default = col_double(),
+##   player_name = col_character(),
+##   player_id = col_character(),
+##   season_type = col_character(),
+##   team = col_character()
+## )</code></pre>
+<pre><code>## See spec(...) for full column specifications.</code></pre>
+<pre class="r"><code>nba_salary &lt;- read_csv(&quot;NBASalary.csv&quot;)</code></pre>
+<pre><code>## Warning: Missing column names filled in: &#39;X1&#39; [1]</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   X1 = col_double(),
+##   Player = col_character(),
+##   `2019/20` = col_character(),
+##   `2020/21` = col_character(),
+##   `2021/22` = col_character(),
+##   `2022/23` = col_character(),
+##   `2023/24` = col_character(),
+##   `2024/25` = col_character()
+## )</code></pre>
+<pre class="r"><code>glimpse(nba_raptor)</code></pre>
+<pre><code>## Rows: 808
+## Columns: 23
+## $ player_name          &lt;chr&gt; &quot;Jaylen Adams&quot;, &quot;Steven Adams&quot;, &quot;Steven Adams&quot;, …
+## $ player_id            &lt;chr&gt; &quot;adamsja01&quot;, &quot;adamsst01&quot;, &quot;adamsst01&quot;, &quot;adebaba0…
+## $ season               &lt;dbl&gt; 2020, 2020, 2020, 2020, 2020, 2020, 2020, 2020, …
+## $ season_type          &lt;chr&gt; &quot;PO&quot;, &quot;PO&quot;, &quot;RS&quot;, &quot;PO&quot;, &quot;RS&quot;, &quot;RS&quot;, &quot;RS&quot;, &quot;RS&quot;, …
+## $ team                 &lt;chr&gt; &quot;POR&quot;, &quot;OKC&quot;, &quot;OKC&quot;, &quot;MIA&quot;, &quot;MIA&quot;, &quot;SAS&quot;, &quot;MIA&quot;,…
+## $ poss                 &lt;dbl&gt; 43, 442, 3522, 1165, 4953, 3648, 31, 1288, 1578,…
+## $ mp                   &lt;dbl&gt; 21, 210, 1680, 574, 2417, 1754, 13, 591, 718, 13…
+## $ raptor_box_offense   &lt;dbl&gt; 2.2588012, -0.9397022, 0.5490096, 1.2567492, -1.…
+## $ raptor_box_defense   &lt;dbl&gt; 4.05777209, 3.20387694, 1.74107264, 2.73524166, …
+## $ raptor_box_total     &lt;dbl&gt; 6.3165733, 2.2641748, 2.2900822, 3.9919909, 0.99…
+## $ raptor_onoff_offense &lt;dbl&gt; 21.2721947, -8.4328584, 0.9597785, 8.1494464, 2.…
+## $ raptor_onoff_defense &lt;dbl&gt; 19.23969721, -5.08691622, 0.91413847, 5.29084927…
+## $ raptor_onoff_total   &lt;dbl&gt; 40.5118920, -13.5197747, 1.8739170, 13.4402957, …
+## $ raptor_offense       &lt;dbl&gt; 6.44535510, -2.44678385, 0.66338323, 2.68565468,…
+## $ raptor_defense       &lt;dbl&gt; 7.5121526, 1.6404810, 1.6587247, 3.4027056, 2.15…
+## $ raptor_total         &lt;dbl&gt; 13.9575078, -0.8063028, 2.3221080, 6.0883603, 1.…
+## $ war_total            &lt;dbl&gt; 0.18131137, 0.21347230, 4.32938475, 2.66612910, …
+## $ war_reg_season       &lt;dbl&gt; 0.00000000, 0.00000000, 4.32938475, 0.00000000, …
+## $ war_playoffs         &lt;dbl&gt; 0.18131137, 0.21347230, 0.00000000, 2.66612910, …
+## $ predator_offense     &lt;dbl&gt; 4.39129961, -4.48430526, 0.05522584, 5.82818495,…
+## $ predator_defense     &lt;dbl&gt; 3.3757170, -0.9360893, 1.9478919, 2.8750117, 1.3…
+## $ predator_total       &lt;dbl&gt; 7.7670166, -5.4203946, 2.0031178, 8.7031967, 0.9…
+## $ pace_impact          &lt;dbl&gt; -1.78413139, -0.60702096, -0.42512985, -0.126695…</code></pre>
+<pre class="r"><code>glimpse(nba_salary)</code></pre>
+<pre><code>## Rows: 581
+## Columns: 8
+## $ X1        &lt;dbl&gt; 1, 2, 2, 4, 4, 6, 7, 8, 9, 10, 11, 11, 11, 11, 11, 16, 17, …
+## $ Player    &lt;chr&gt; &quot;Stephen Curry&quot;, &quot;Russell Westbrook&quot;, &quot;Chris Paul&quot;, &quot;James …
+## $ `2019/20` &lt;chr&gt; &quot;$40,231,758&quot;, &quot;$38,506,482&quot;, &quot;$38,506,482&quot;, &quot;$38,199,000&quot;,…
+## $ `2020/21` &lt;chr&gt; &quot;$43,006,362&quot;, &quot;$41,358,814&quot;, &quot;$41,358,814&quot;, &quot;$41,254,920&quot;,…
+## $ `2021/22` &lt;chr&gt; &quot;$45,780,966&quot;, &quot;$44,211,146&quot;, &quot;$44,211,146&quot;, &quot;$44,310,840&quot;,…
+## $ `2022/23` &lt;chr&gt; &quot;$0&quot;, &quot;$47,063,478&quot;, &quot;$0&quot;, &quot;$47,366,760&quot;, &quot;$47,366,760&quot;, &quot;$…
+## $ `2023/24` &lt;chr&gt; &quot;$0&quot;, &quot;$0&quot;, &quot;$0&quot;, &quot;$0&quot;, &quot;$0&quot;, &quot;$0&quot;, &quot;$0&quot;, &quot;$0&quot;, &quot;$0&quot;, &quot;$0&quot;,…
+## $ `2024/25` &lt;chr&gt; &quot;$0&quot;, &quot;$0&quot;, &quot;$0&quot;, &quot;$0&quot;, &quot;$0&quot;, &quot;$0&quot;, &quot;$0&quot;, &quot;$0&quot;, &quot;$0&quot;, &quot;$0&quot;,…</code></pre>
+<pre class="r"><code>raptor &lt;- nba_raptor %&gt;% filter(mp &gt;= 1400) %&gt;% select(player_name, team, mp, raptor_offense, raptor_defense, raptor_total)
+glimpse(raptor)</code></pre>
+<pre><code>## Rows: 156
+## Columns: 6
+## $ player_name    &lt;chr&gt; &quot;Steven Adams&quot;, &quot;Bam Adebayo&quot;, &quot;LaMarcus Aldridge&quot;, &quot;J…
+## $ team           &lt;chr&gt; &quot;OKC&quot;, &quot;MIA&quot;, &quot;SAS&quot;, &quot;BRK&quot;, &quot;MIL&quot;, &quot;POR&quot;, &quot;TOR&quot;, &quot;ORL&quot;…
+## $ mp             &lt;dbl&gt; 1680, 2417, 1754, 1852, 1917, 1902, 2066, 1420, 2025, …
+## $ raptor_offense &lt;dbl&gt; 0.66338323, -0.56090305, -0.66144083, 0.02730606, 5.46…
+## $ raptor_defense &lt;dbl&gt; 1.6587247, 2.1503766, 0.7815816, 2.0876539, 3.8746785,…
+## $ raptor_total   &lt;dbl&gt; 2.3221080, 1.5894735, 0.1201407, 2.1149599, 9.3405204,…</code></pre>
+<pre class="r"><code>salary &lt;- nba_salary %&gt;% select(Player,`2019/20`,`2020/21`)
+salary &lt;- salary %&gt;% rename(&quot;2019/20 Salary&quot;=&quot;2019/20&quot;,&quot;2020/21 Salary&quot;=&quot;2020/21&quot;)
+glimpse(salary)</code></pre>
+<pre><code>## Rows: 581
+## Columns: 3
+## $ Player           &lt;chr&gt; &quot;Stephen Curry&quot;, &quot;Russell Westbrook&quot;, &quot;Chris Paul&quot;, …
+## $ `2019/20 Salary` &lt;chr&gt; &quot;$40,231,758&quot;, &quot;$38,506,482&quot;, &quot;$38,506,482&quot;, &quot;$38,19…
+## $ `2020/21 Salary` &lt;chr&gt; &quot;$43,006,362&quot;, &quot;$41,358,814&quot;, &quot;$41,358,814&quot;, &quot;$41,25…</code></pre>
+<pre class="r"><code>NBA &lt;- raptor %&gt;% inner_join(salary, by=c(&#39;player_name&#39;=&#39;Player&#39;))
+NBA &lt;- NBA %&gt;% rename(&quot;player&quot;=&quot;player_name&quot;)
+NBA$`2019/20 Salary` = as.numeric(gsub(&quot;[\\$,]&quot;, &quot;&quot;, NBA$`2019/20 Salary`))
+NBA$`2020/21 Salary` = as.numeric(gsub(&quot;[\\$,]&quot;, &quot;&quot;, NBA$`2020/21 Salary`))
+glimpse(NBA)</code></pre>
+<pre><code>## Rows: 141
+## Columns: 8
+## $ player           &lt;chr&gt; &quot;Steven Adams&quot;, &quot;Bam Adebayo&quot;, &quot;LaMarcus Aldridge&quot;, …
+## $ team             &lt;chr&gt; &quot;OKC&quot;, &quot;MIA&quot;, &quot;SAS&quot;, &quot;BRK&quot;, &quot;MIL&quot;, &quot;POR&quot;, &quot;TOR&quot;, &quot;NO…
+## $ mp               &lt;dbl&gt; 1680, 2417, 1754, 1852, 1917, 1902, 2066, 2025, 2482…
+## $ raptor_offense   &lt;dbl&gt; 0.66338323, -0.56090305, -0.66144083, 0.02730606, 5.…
+## $ raptor_defense   &lt;dbl&gt; 1.6587247, 2.1503766, 0.7815816, 2.0876539, 3.874678…
+## $ raptor_total     &lt;dbl&gt; 2.3221080, 1.5894735, 0.1201407, 2.1149599, 9.340520…
+## $ `2019/20 Salary` &lt;dbl&gt; 25842697, 3454080, 26000000, 2376840, 25842697, 2159…
+## $ `2020/21 Salary` &lt;dbl&gt; 27528088, 5115492, 24000000, 3909902, 27528088, 0, 3…</code></pre>
+<div id="the-two-datasets-raptor-and-salary-were-joined-to-form-a-merged-dataset-called-nba-using-the-dplyr-join-function-of-inner_join-which-kept-only-the-rows-that-have-a-match-for-the-id-variable.-the-id-variable-in-this-case-is-the-name-of-the-nba-player.-i-chose-this-join-because-it-keeps-all-the-data-from-both-datasets-as-long-as-it-had-a-match-for-player-name.-the-raptor-dataset-included-all-players-with-1400-or-more-minutes-played-in-the-2020-season.-this-limited-the-observations-to-a-manageable-amount-of-156-observations-of-6-variables.-the-salary-dataset-included-all-nba-players-with-active-contracts.-this-dataset-had-a-total-of-581-observations-of-3-variables.-even-though-there-were-originally-more-observations-in-salary-only-observations-that-had-matches-in-the-raptor-dataset-were-included.-this-resulted-in-141-observations-nba-players-of-8-variables-player-team-mp-minutes-played-raptor_offense-raptor_defense-raptor_total-201920-salary-and-202021-salary.-the-cases-that-were-dropped-were-those-that-did-not-have-matches-in-both-datasets-meaning-that-the-nba-player-was-included-in-one-of-the-datasets-either-raptor-or-salary-but-not-the-other.-a-reason-for-them-not-being-included-in-both-datasets-is-that-they-did-not-play-more-than-1400-minutes-during-the-season-andor-do-not-have-an-active-contract-with-a-salary.-a-potential-problem-is-that-the-entirety-of-the-nba-is-not-included-in-the-project-meaning-that-the-trends-found-by-the-selected-statistics-included-in-this-problem-may-not-be-representative-of-the-entire-population-the-nba." class="section level4">
+<h4>The two datasets &quot;raptor&quot; and &quot;salary&quot; were joined to form a merged dataset called &quot;NBA&quot; using the dplyr join function of inner_join, which kept only the rows that have a match for the ID variable. The ID variable in this case is the name of the NBA player. I chose this join because it keeps all the data from both datasets as long as it had a match for player name. The &quot;raptor&quot; dataset included all players with 1400 or more minutes played in the 2020 season. This limited the observations to a manageable amount of 156 observations of 6 variables. The &quot;salary&quot; dataset included all NBA players with active contracts. This dataset had a total of 581 observations of 3 variables. Even though there were originally more observations in &quot;salary&quot;, only observations that had matches in the &quot;raptor&quot; dataset were included. This resulted in 141 observations (NBA players) of 8 variables: player, team, mp (minutes played), raptor_offense, raptor_defense, raptor_total, 2019/20 Salary, and 2020/21 Salary. The cases that were dropped were those that did not have matches in both datasets, meaning that the NBA player was included in one of the datasets (either raptor or salary) but not the other. A reason for them not being included in both datasets is that they did not play more than 1400 minutes during the season and/or do not have an active contract with a salary. A potential problem is that the entirety of the NBA is not included in the project, meaning that the trends found by the selected statistics included in this problem may not be representative of the entire population (the NBA).</h4>
+</div>
+</div>
+<div id="wrangling-with-dplyr-functions" class="section level2">
+<h2>Wrangling with dplyr functions</h2>
+<pre class="r"><code>NBA &lt;- NBA %&gt;% mutate(&quot;2019/20 Salary/Min&quot; = `2019/20 Salary`/mp)
+NBA1 &lt;- NBA %&gt;% rename(&quot;minutes_played&quot;=&quot;mp&quot;)
+NBA1 %&gt;% filter(team == &quot;SAS&quot;)</code></pre>
+<pre><code>## # A tibble: 6 x 9
+##   player team  minutes_played raptor_offense raptor_defense raptor_total
+##   &lt;chr&gt;  &lt;chr&gt;          &lt;dbl&gt;          &lt;dbl&gt;          &lt;dbl&gt;        &lt;dbl&gt;
+## 1 LaMar… SAS             1754        -0.661           0.782       0.120 
+## 2 DeMar… SAS             2316         2.77           -2.67        0.0980
+## 3 Bryn … SAS             1579         0.0113         -3.39       -3.37  
+## 4 Rudy … SAS             1461        -1.07            0.937      -0.133 
+## 5 Dejou… SAS             1687        -0.452          -0.125      -0.577 
+## 6 Derri… SAS             1677         1.21            2.19        3.40  
+## # … with 3 more variables: `2019/20 Salary` &lt;dbl&gt;, `2020/21 Salary` &lt;dbl&gt;,
+## #   `2019/20 Salary/Min` &lt;dbl&gt;</code></pre>
+<pre class="r"><code>NBA1 %&gt;% filter(team == &quot;SAS&quot;) %&gt;% select(player,raptor_total,`2019/20 Salary`, `2019/20 Salary/Min`)</code></pre>
+<pre><code>## # A tibble: 6 x 4
+##   player            raptor_total `2019/20 Salary` `2019/20 Salary/Min`
+##   &lt;chr&gt;                    &lt;dbl&gt;            &lt;dbl&gt;                &lt;dbl&gt;
+## 1 LaMarcus Aldridge       0.120          26000000               14823.
+## 2 DeMar DeRozan           0.0980         27739975               11978.
+## 3 Bryn Forbes            -3.37            2875000                1821.
+## 4 Rudy Gay               -0.133          14500000                9925.
+## 5 Dejounte Murray        -0.577           2321735                1376.
+## 6 Derrick White           3.40            1948080                1162.</code></pre>
+<pre class="r"><code>NBA1 %&gt;% filter(team == &quot;SAS&quot;) %&gt;% select(player,raptor_total,`2019/20 Salary`, `2019/20 Salary/Min`) %&gt;% arrange(-raptor_total)</code></pre>
+<pre><code>## # A tibble: 6 x 4
+##   player            raptor_total `2019/20 Salary` `2019/20 Salary/Min`
+##   &lt;chr&gt;                    &lt;dbl&gt;            &lt;dbl&gt;                &lt;dbl&gt;
+## 1 Derrick White           3.40            1948080                1162.
+## 2 LaMarcus Aldridge       0.120          26000000               14823.
+## 3 DeMar DeRozan           0.0980         27739975               11978.
+## 4 Rudy Gay               -0.133          14500000                9925.
+## 5 Dejounte Murray        -0.577           2321735                1376.
+## 6 Bryn Forbes            -3.37            2875000                1821.</code></pre>
+<pre class="r"><code>NBA1 %&gt;% group_by(team) %&gt;% summarize(mean_raptor_total=mean(raptor_total), sd_raptor_total=sd(raptor_total))</code></pre>
+<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
+<pre><code>## # A tibble: 30 x 3
+##    team  mean_raptor_total sd_raptor_total
+##    &lt;chr&gt;             &lt;dbl&gt;           &lt;dbl&gt;
+##  1 ATL              -1.47            3.48 
+##  2 BOS               2.66            1.84 
+##  3 BRK              -0.169           1.76 
+##  4 CHA              -2.60            0.684
+##  5 CHI              -1.53            1.46 
+##  6 CLE              -2.56            2.51 
+##  7 DAL               1.68            2.57 
+##  8 DEN               0.814           2.84 
+##  9 DET              -0.617           0.909
+## 10 GSW              -2.43            2.46 
+## # … with 20 more rows</code></pre>
+</div>
+<div id="summary-statistics" class="section level2">
+<h2>Summary statistics</h2>
+<pre class="r"><code>NBA1 %&gt;% group_by(team) %&gt;% summarize_if(is.numeric,list(mean=mean,sd=sd)) %&gt;% mutate_if(is.numeric, round) %&gt;% pivot_longer(-1) %&gt;% pivot_wider(names_from=team,values_from=&quot;value&quot;)</code></pre>
+<pre><code>## # A tibble: 14 x 31
+##    name      ATL    BOS    BRK     CHA     CHI     CLE    DAL    DEN     DET
+##    &lt;chr&gt;   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;
+##  1 minu…    1862 1.86e3 1.91e3  2.08e3  1.74e3  1.88e3 1.84e3 1.91e3  1.66e3
+##  2 rapt…       0 2.00e0 0.     -1.00e0 -1.00e0 -1.00e0 2.00e0 1.00e0 -1.00e0
+##  3 rapt…      -2 1.00e0 0.     -2.00e0 -1.00e0 -2.00e0 0.     0.      0.    
+##  4 rapt…      -1 3.00e0 0.     -3.00e0 -2.00e0 -3.00e0 2.00e0 1.00e0 -1.00e0
+##  5 2019… 5055840 1.62e7 5.78e6  1.18e7  1.06e7  1.23e7 1.07e7 1.22e7  1.18e7
+##  6 2020… 5303430 2.00e7 6.52e6  1.14e7  1.11e7  1.04e7 1.11e7 1.71e7  1.06e7
+##  7 2019…    2674 9.03e3 2.97e3  5.54e3  5.90e3  6.86e3 5.95e3 6.12e3  7.12e3
+##  8 minu…     257 2.40e2 1.51e2  1.20e2  2.38e2  1.65e2 2.31e2 2.34e2  3.10e1
+##  9 rapt…       5 2.00e0 2.00e0  1.00e0  2.00e0  2.00e0 3.00e0 2.00e0  1.00e0
+## 10 rapt…       1 1.00e0 2.00e0  0.      1.00e0  2.00e0 2.00e0 2.00e0  2.00e0
+## 11 rapt…       3 2.00e0 2.00e0  1.00e0  1.00e0  3.00e0 3.00e0 3.00e0  1.00e0
+## 12 2019… 2003520 1.30e7 3.34e6  1.14e7  5.94e6  1.11e7 8.35e6 9.46e6  1.10e7
+## 13 2020… 2103261 1.26e7 5.22e6  1.06e7  5.64e6  1.21e7 9.17e6 1.10e7  1.32e7
+## 14 2019…     848 7.67e3 1.58e3  5.17e3  2.74e3  6.42e3 4.66e3 4.24e3  6.65e3
+## # … with 21 more variables: GSW &lt;dbl&gt;, HOU &lt;dbl&gt;, IND &lt;dbl&gt;, LAC &lt;dbl&gt;,
+## #   LAL &lt;dbl&gt;, MEM &lt;dbl&gt;, MIA &lt;dbl&gt;, MIL &lt;dbl&gt;, MIN &lt;dbl&gt;, NOP &lt;dbl&gt;,
+## #   NYK &lt;dbl&gt;, OKC &lt;dbl&gt;, ORL &lt;dbl&gt;, PHI &lt;dbl&gt;, PHO &lt;dbl&gt;, POR &lt;dbl&gt;,
+## #   SAC &lt;dbl&gt;, SAS &lt;dbl&gt;, TOR &lt;dbl&gt;, UTA &lt;dbl&gt;, WAS &lt;dbl&gt;</code></pre>
+<pre class="r"><code>NBA1 %&gt;% summarize_all(n_distinct)</code></pre>
+<pre><code>## # A tibble: 1 x 9
+##   player  team minutes_played raptor_offense raptor_defense raptor_total
+##    &lt;int&gt; &lt;int&gt;          &lt;int&gt;          &lt;int&gt;          &lt;int&gt;        &lt;int&gt;
+## 1    141    30            130            141            141          141
+## # … with 3 more variables: `2019/20 Salary` &lt;int&gt;, `2020/21 Salary` &lt;int&gt;,
+## #   `2019/20 Salary/Min` &lt;int&gt;</code></pre>
+<pre class="r"><code>NBA1 %&gt;% group_by(team) %&gt;% summarize_all(n_distinct) %&gt;% select(-player)</code></pre>
+<pre><code>## # A tibble: 30 x 8
+##    team  minutes_played raptor_offense raptor_defense raptor_total
+##    &lt;chr&gt;          &lt;int&gt;          &lt;int&gt;          &lt;int&gt;        &lt;int&gt;
+##  1 ATL                4              4              4            4
+##  2 BOS                6              6              6            6
+##  3 BRK                5              5              5            5
+##  4 CHA                2              2              2            2
+##  5 CHI                5              5              5            5
+##  6 CLE                5              5              5            5
+##  7 DAL                6              6              6            6
+##  8 DEN                6              6              6            6
+##  9 DET                4              4              4            4
+## 10 GSW                3              3              3            3
+## # … with 20 more rows, and 3 more variables: `2019/20 Salary` &lt;int&gt;, `2020/21
+## #   Salary` &lt;int&gt;, `2019/20 Salary/Min` &lt;int&gt;</code></pre>
+<pre class="r"><code>NBA1 %&gt;% summarize_if(is.numeric, mean)</code></pre>
+<pre><code>## # A tibble: 1 x 7
+##   minutes_played raptor_offense raptor_defense raptor_total `2019/20 Salary`
+##            &lt;dbl&gt;          &lt;dbl&gt;          &lt;dbl&gt;        &lt;dbl&gt;            &lt;dbl&gt;
+## 1          1867.          0.776        -0.0558        0.720        12892397.
+## # … with 2 more variables: `2020/21 Salary` &lt;dbl&gt;, `2019/20 Salary/Min` &lt;dbl&gt;</code></pre>
+<pre class="r"><code>NBA1 %&gt;% group_by(team) %&gt;% summarize_if(is.numeric,mean)</code></pre>
+<pre><code>## # A tibble: 30 x 8
+##    team  minutes_played raptor_offense raptor_defense raptor_total
+##    &lt;chr&gt;          &lt;dbl&gt;          &lt;dbl&gt;          &lt;dbl&gt;        &lt;dbl&gt;
+##  1 ATL            1862.          0.313        -1.78         -1.47 
+##  2 BOS            1861           1.93          0.728         2.66 
+##  3 BRK            1911.          0.109        -0.277        -0.169
+##  4 CHA            2080.         -1.03         -1.57         -2.60 
+##  5 CHI            1744          -0.708        -0.818        -1.53 
+##  6 CLE            1876.         -0.582        -1.98         -2.56 
+##  7 DAL            1836.          1.66          0.0222        1.68 
+##  8 DEN            1911.          0.825        -0.0110        0.814
+##  9 DET            1658.         -0.854         0.237        -0.617
+## 10 GSW            1531          -0.877        -1.55         -2.43 
+## # … with 20 more rows, and 3 more variables: `2019/20 Salary` &lt;dbl&gt;, `2020/21
+## #   Salary` &lt;dbl&gt;, `2019/20 Salary/Min` &lt;dbl&gt;</code></pre>
+<pre class="r"><code>NBA1 %&gt;% filter(team==&quot;SAS&quot;) %&gt;% summarize_if(is.numeric,mean) %&gt;% select(-minutes_played)</code></pre>
+<pre><code>## # A tibble: 1 x 6
+##   raptor_offense raptor_defense raptor_total `2019/20 Salary` `2020/21 Salary`
+##            &lt;dbl&gt;          &lt;dbl&gt;        &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;
+## 1          0.301         -0.378      -0.0770        12564132.        14007043.
+## # … with 1 more variable: `2019/20 Salary/Min` &lt;dbl&gt;</code></pre>
+<pre class="r"><code>NBA1 %&gt;% summarize_if(is.numeric,sd)</code></pre>
+<pre><code>## # A tibble: 1 x 7
+##   minutes_played raptor_offense raptor_defense raptor_total `2019/20 Salary`
+##            &lt;dbl&gt;          &lt;dbl&gt;          &lt;dbl&gt;        &lt;dbl&gt;            &lt;dbl&gt;
+## 1           281.           2.35           1.96         2.99        10813225.
+## # … with 2 more variables: `2020/21 Salary` &lt;dbl&gt;, `2019/20 Salary/Min` &lt;dbl&gt;</code></pre>
+<pre class="r"><code>NBA1 %&gt;% group_by(team) %&gt;% summarize_if(is.numeric,sd)</code></pre>
+<pre><code>## # A tibble: 30 x 8
+##    team  minutes_played raptor_offense raptor_defense raptor_total
+##    &lt;chr&gt;          &lt;dbl&gt;          &lt;dbl&gt;          &lt;dbl&gt;        &lt;dbl&gt;
+##  1 ATL            257.           4.63          1.43          3.48 
+##  2 BOS            240.           2.02          1.35          1.84 
+##  3 BRK            151.           2.23          1.74          1.76 
+##  4 CHA            120.           0.597         0.0865        0.684
+##  5 CHI            238.           1.50          1.21          1.46 
+##  6 CLE            165.           1.93          2.32          2.51 
+##  7 DAL            231.           3.15          1.52          2.57 
+##  8 DEN            234.           2.37          1.74          2.84 
+##  9 DET             30.6          1.44          2.11          0.909
+## 10 GSW            116.           0.468         2.00          2.46 
+## # … with 20 more rows, and 3 more variables: `2019/20 Salary` &lt;dbl&gt;, `2020/21
+## #   Salary` &lt;dbl&gt;, `2019/20 Salary/Min` &lt;dbl&gt;</code></pre>
+<pre class="r"><code>NBA1 %&gt;% summarize_if(is.numeric,var)</code></pre>
+<pre><code>## # A tibble: 1 x 7
+##   minutes_played raptor_offense raptor_defense raptor_total `2019/20 Salary`
+##            &lt;dbl&gt;          &lt;dbl&gt;          &lt;dbl&gt;        &lt;dbl&gt;            &lt;dbl&gt;
+## 1         79196.           5.52           3.85         8.96 116925829393985.
+## # … with 2 more variables: `2020/21 Salary` &lt;dbl&gt;, `2019/20 Salary/Min` &lt;dbl&gt;</code></pre>
+<pre class="r"><code>NBA1 %&gt;% group_by(team) %&gt;% summarize_if(is.numeric,var) %&gt;% arrange(desc(raptor_total))</code></pre>
+<pre><code>## # A tibble: 30 x 8
+##    team  minutes_played raptor_offense raptor_defense raptor_total
+##    &lt;chr&gt;          &lt;dbl&gt;          &lt;dbl&gt;          &lt;dbl&gt;        &lt;dbl&gt;
+##  1 HOU          176477.          16.3            4.39        34.0 
+##  2 POR          204204.          19.2            5.29        27.0 
+##  3 LAC           45738           10.0            6.30        25.3 
+##  4 WAS          101850.          15.4            2.66        17.6 
+##  5 LAL          107372.           9.86           2.94        15.3 
+##  6 NYK          112144            2.43           4.35        13.2 
+##  7 ATL           66008.          21.5            2.05        12.1 
+##  8 MIL           23567.           8.11           1.67         8.41
+##  9 MIA          108520.           4.16           2.46         8.09
+## 10 DEN           54769.           5.61           3.03         8.08
+## # … with 20 more rows, and 3 more variables: `2019/20 Salary` &lt;dbl&gt;, `2020/21
+## #   Salary` &lt;dbl&gt;, `2019/20 Salary/Min` &lt;dbl&gt;</code></pre>
+<pre class="r"><code>NBA1 %&gt;% summarize_if(is.numeric,list(min=min,max=max)) </code></pre>
+<pre><code>## # A tibble: 1 x 14
+##   minutes_played_… raptor_offense_… raptor_defense_… raptor_total_min
+##              &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;
+## 1             1411            -2.95            -4.65            -6.55
+## # … with 10 more variables: `2019/20 Salary_min` &lt;dbl&gt;, `2020/21
+## #   Salary_min` &lt;dbl&gt;, `2019/20 Salary/Min_min` &lt;dbl&gt;,
+## #   minutes_played_max &lt;dbl&gt;, raptor_offense_max &lt;dbl&gt;,
+## #   raptor_defense_max &lt;dbl&gt;, raptor_total_max &lt;dbl&gt;, `2019/20
+## #   Salary_max` &lt;dbl&gt;, `2020/21 Salary_max` &lt;dbl&gt;, `2019/20
+## #   Salary/Min_max` &lt;dbl&gt;</code></pre>
+<pre class="r"><code>NBA1 %&gt;% group_by(team) %&gt;% summarize_if(is.numeric, list(min=min,max=max)) %&gt;% mutate_if(is.numeric,round) %&gt;% pivot_longer(-1)</code></pre>
+<pre><code>## # A tibble: 420 x 3
+##    team  name                     value
+##    &lt;chr&gt; &lt;chr&gt;                    &lt;dbl&gt;
+##  1 ATL   minutes_played_min        1551
+##  2 ATL   raptor_offense_min          -3
+##  3 ATL   raptor_defense_min          -3
+##  4 ATL   raptor_total_min            -4
+##  5 ATL   2019/20 Salary_min     2636280
+##  6 ATL   2020/21 Salary_min     2761920
+##  7 ATL   2019/20 Salary/Min_min    1498
+##  8 ATL   minutes_played_max        2120
+##  9 ATL   raptor_offense_max           7
+## 10 ATL   raptor_defense_max           0
+## # … with 410 more rows</code></pre>
+<pre class="r"><code>NBA1 %&gt;% summarize_if(is.numeric, list(Q3=quantile), probs=.75)</code></pre>
+<pre><code>## # A tibble: 1 x 7
+##   minutes_played_… raptor_offense_… raptor_defense_… raptor_total_Q3
+##              &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;           &lt;dbl&gt;
+## 1             2066             1.64             1.55            2.32
+## # … with 3 more variables: `2019/20 Salary_Q3` &lt;dbl&gt;, `2020/21
+## #   Salary_Q3` &lt;dbl&gt;, `2019/20 Salary/Min_Q3` &lt;dbl&gt;</code></pre>
+<pre class="r"><code>NBA1 %&gt;% group_by(team) %&gt;% summarize_if(is.numeric, list(Q3=quantile), probs=.75) %&gt;% mutate_if(is.numeric,round) %&gt;% pivot_longer(-1)</code></pre>
+<pre><code>## # A tibble: 210 x 3
+##    team  name                    value
+##    &lt;chr&gt; &lt;chr&gt;                   &lt;dbl&gt;
+##  1 ATL   minutes_played_Q3        2044
+##  2 ATL   raptor_offense_Q3           1
+##  3 ATL   raptor_defense_Q3          -1
+##  4 ATL   raptor_total_Q3            -1
+##  5 ATL   2019/20 Salary_Q3     6471840
+##  6 ATL   2020/21 Salary_Q3     6784350
+##  7 ATL   2019/20 Salary/Min_Q3    3095
+##  8 BOS   minutes_played_Q3        1930
+##  9 BOS   raptor_offense_Q3           3
+## 10 BOS   raptor_defense_Q3           2
+## # … with 200 more rows</code></pre>
+<pre class="r"><code>NBA1 %&gt;% summarize(count=n())</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   count
+##   &lt;int&gt;
+## 1   141</code></pre>
+<pre class="r"><code>NBA1 %&gt;% group_by(team) %&gt;% summarize(count=n())</code></pre>
+<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
+<pre><code>## # A tibble: 30 x 2
+##    team  count
+##    &lt;chr&gt; &lt;int&gt;
+##  1 ATL       4
+##  2 BOS       6
+##  3 BRK       5
+##  4 CHA       2
+##  5 CHI       5
+##  6 CLE       5
+##  7 DAL       6
+##  8 DEN       6
+##  9 DET       4
+## 10 GSW       3
+## # … with 20 more rows</code></pre>
+<pre class="r"><code>corNBA &lt;- NBA1 %&gt;% select(-1,-2) %&gt;% cor 
+corNBA</code></pre>
+<pre><code>##                    minutes_played raptor_offense raptor_defense raptor_total
+## minutes_played         1.00000000     0.42583105    -0.01167852    0.3264323
+## raptor_offense         0.42583105     1.00000000    -0.04356586    0.7560018
+## raptor_defense        -0.01167852    -0.04356586     1.00000000    0.6210122
+## raptor_total           0.32643229     0.75600180     0.62101219    1.0000000
+## 2019/20 Salary         0.32373036     0.47603524     0.20194249    0.5057825
+## 2020/21 Salary         0.39783573     0.45595705     0.19572474    0.4859564
+## 2019/20 Salary/Min     0.13329432     0.39882577     0.22876021    0.4627788
+##                    2019/20 Salary 2020/21 Salary 2019/20 Salary/Min
+## minutes_played          0.3237304      0.3978357          0.1332943
+## raptor_offense          0.4760352      0.4559571          0.3988258
+## raptor_defense          0.2019425      0.1957247          0.2287602
+## raptor_total            0.5057825      0.4859564          0.4627788
+## 2019/20 Salary          1.0000000      0.8297910          0.9690258
+## 2020/21 Salary          0.8297910      1.0000000          0.7821195
+## 2019/20 Salary/Min      0.9690258      0.7821195          1.0000000</code></pre>
+<pre class="r"><code>corNBA &lt;- corNBA %&gt;% as.data.frame</code></pre>
+<div id="the-merged-nba-dataset-was-first-mutated-to-create-a-ninth-variable-that-was-a-function-of-the-201920-salary-variable-divided-by-the-minutes_played-variable.-the-new-variable-is-the-nba-players-201920-salary-per-minute-and-is-called-201920-salarymin.-this-new-dataset-was-filtered-using-the-dplyr-filter-function-to-only-show-the-data-for-players-on-the-san-antonio-spurs-team.-there-were-6-sas-players.-this-filtered-dataset-was-then-reduced-to-only-some-of-the-datasets-variables-using-the-dplyr-select-function-and-then-arranged-in-descending-order-of-total-raptor-score-using-the-dplyr-arrange-function.-it-was-revealed-that-derrick-white-the-spurs-player-with-the-highest-total-raptor-score-had-the-lowest-salary-in-201920.-this-was-not-a-direct-correlation-however-as-demar-derozan-the-spurs-player-with-the-highest-salary-in-201920-had-the-third-highest-total-raptor-score.-the-dataset-was-finally-grouped-by-team-and-summarized-using-the-dplyr-summarize-function-to-give-the-mean-and-standard-deviation-of-each-nba-teams-made-up-of-playersobservations-overall-raptor-scores.-the-team-with-the-highest-mean-total-raptor-score-was-the-los-angeles-clippers-lac-4.8-points-and-the-team-with-the-highest-standard-deviation-was-the-houston-rockets-hou-5.8-points." class="section level4">
+<h4>The merged NBA dataset was first mutated to create a ninth variable that was a function of the &quot;2019/20 Salary&quot; variable divided by the &quot;minutes_played&quot; variable. The new variable is the NBA players' 2019/20 Salary per minute and is called &quot;2019/20 Salary/Min&quot;. This new dataset was filtered (using the dplyr &quot;filter&quot; function) to only show the data for players on the San Antonio Spurs team. There were 6 SAS players. This filtered dataset was then reduced to only some of the dataset's variables using the dplyr &quot;select&quot; function and then arranged in descending order of total raptor score using the dplyr &quot;arrange&quot; function. It was revealed that Derrick White, the Spurs player with the highest total RAPTOR score, had the lowest salary in 2019/20. This was not a direct correlation however, as Demar Derozan, the Spurs player with the highest salary in 2019/20, had the third highest total RAPTOR score. The dataset was finally grouped by team and summarized, using the dplyr &quot;summarize&quot; function, to give the mean and standard deviation of each NBA teams' (made up of players/observations) overall RAPTOR scores. The team with the highest mean total RAPTOR score was the Los Angeles Clippers (LAC, 4.8 points) and the team with the highest standard deviation was the Houston Rockets (HOU, 5.8 points).</h4>
+</div>
+<div id="the-nba-dataset-was-then-pivoted-longer-and-pivoted-wider-to-show-the-mean-and-standard-deviations-of-all-seven-numeric-variables-by-team-in-an-easy-to-read-table.-summary-statistics-summarize-summarize_if-summarize_all-functions-were-then-applied-to-the-dataset-to-determine-the-overall-mean-standard-deviation-distinct-values-variation-minimum-values-maximum-values-third-quartile-values-and-number-of-all-variables-for-all-observations.-the-same-summary-statistics-were-also-applied-after-being-grouped-by-teams-so-that-the-same-summary-statistics-were-shown-for-each-team.-finally-a-correlation-matrix-was-created-for-all-7-numeric-variables-and-converted-into-a-data-frame.-high-correlation-coefficients-were-found-between-offensive-raptor-and-total-raptor-201920-salary-and-202021-salary-and-201920-salary-and-201920-salary-per-minute.-this-implies-that-a-players-total-raptor-score-is-most-correlated-with-their-offensive-raptor-score.-due-to-the-fact-that-total-raptor-is-calculated-by-offensive-raptor-plus-defensive-raptor-this-correlation-indicates-that-most-nba-players-offensive-game-is-indicative-of-their-game-as-a-whole.-the-correlations-in-salaries-between-the-two-years-are-high-most-likely-due-to-the-fact-that-an-nba-contract-is-divided-up-fairly-equally-throughout-its-duration.-as-201920-salary-per-minute-is-a-function-of-201920-salary-a-high-correlation-coefficient-was-expected." class="section level4">
+<h4>The NBA dataset was then pivoted longer and pivoted wider to show the mean and standard deviations of all seven numeric variables by team in an easy-to-read table. Summary statistics (summarize, summarize_if, summarize_all) functions were then applied to the dataset to determine the overall mean, standard deviation, distinct values, variation, minimum values, maximum values, third quartile values, and number of all variables for all observations. The same summary statistics were also applied after being grouped by teams, so that the same summary statistics were shown for each team. Finally, a correlation matrix was created for all 7 numeric variables and converted into a data frame. High correlation coefficients were found between offensive RAPTOR and total RAPTOR, 2019/20 salary and 2020/21 salary, and 2019/20 salary and 2019/20 salary per minute. This implies that a player's total RAPTOR score is most correlated with their offensive RAPTOR score. Due to the fact that total RAPTOR is calculated by offensive RAPTOR plus defensive RAPTOR, this correlation indicates that most NBA players' offensive game is indicative of their game as a whole. The correlations in salaries between the two years are high most likely due to the fact that an NBA contract is divided up fairly equally throughout its duration. As 2019/20 salary per minute is a function of 2019/20 salary, a high correlation coefficient was expected.</h4>
+</div>
+</div>
+<div id="visualizing" class="section level2">
+<h2>Visualizing</h2>
+<pre class="r"><code>tidycorNBA &lt;- corNBA %&gt;% rownames_to_column(&quot;Variable1&quot;) %&gt;% pivot_longer(-1, names_to = &quot;Variable2&quot;,values_to=&quot;correlation&quot;)
+tidycorNBA %&gt;% ggplot(aes(Variable1,Variable2, fill=correlation)) + labs(fill=&quot;Correlation\nCoefficient&quot;) + geom_tile() + scale_fill_gradient2(low=&quot;red&quot;,mid=&quot;white&quot;,high=&quot;blue&quot;) + geom_text(aes(label=round(correlation,2)), color = &quot;black&quot;, size=3) + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + coord_fixed() + ggtitle(&quot;Correlation Heatmap&quot;) + xlab(&quot;Variable 1&quot;) + ylab(&quot;Variable 2&quot;) + theme(plot.title = element_text(hjust = 0.5))</code></pre>
+<p><img src="../project1_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<pre class="r"><code>NBAusage &lt;- NBA1 %&gt;% mutate(MinutesPlayed_cat = case_when(minutes_played&gt;2100 ~ &quot;high usage&quot;, minutes_played&lt;=2100 &amp; minutes_played&gt;=1800 ~ &quot;medium usage&quot;, minutes_played&lt;1800 ~ &quot;low usage&quot;))
+glimpse(NBAusage)</code></pre>
+<pre><code>## Rows: 141
+## Columns: 10
+## $ player               &lt;chr&gt; &quot;Steven Adams&quot;, &quot;Bam Adebayo&quot;, &quot;LaMarcus Aldridg…
+## $ team                 &lt;chr&gt; &quot;OKC&quot;, &quot;MIA&quot;, &quot;SAS&quot;, &quot;BRK&quot;, &quot;MIL&quot;, &quot;POR&quot;, &quot;TOR&quot;,…
+## $ minutes_played       &lt;dbl&gt; 1680, 2417, 1754, 1852, 1917, 1902, 2066, 2025, …
+## $ raptor_offense       &lt;dbl&gt; 0.66338323, -0.56090305, -0.66144083, 0.02730606…
+## $ raptor_defense       &lt;dbl&gt; 1.6587247, 2.1503766, 0.7815816, 2.0876539, 3.87…
+## $ raptor_total         &lt;dbl&gt; 2.3221080, 1.5894735, 0.1201407, 2.1149599, 9.34…
+## $ `2019/20 Salary`     &lt;dbl&gt; 25842697, 3454080, 26000000, 2376840, 25842697, …
+## $ `2020/21 Salary`     &lt;dbl&gt; 27528088, 5115492, 24000000, 3909902, 27528088, …
+## $ `2019/20 Salary/Min` &lt;dbl&gt; 15382.5577, 1429.0774, 14823.2611, 1283.3909, 13…
+## $ MinutesPlayed_cat    &lt;chr&gt; &quot;low usage&quot;, &quot;high usage&quot;, &quot;low usage&quot;, &quot;medium …</code></pre>
+<pre class="r"><code>TX &lt;- NBAusage %&gt;% filter(team == &quot;HOU&quot; | team == &quot;DAL&quot; | team ==&quot;SAS&quot;)
+TX %&gt;% ggplot(aes(raptor_offense,raptor_defense,color=team,shape=MinutesPlayed_cat)) + labs(color=&quot;Mean RAPTOR\nScore (points)&quot;, shape = &quot;Player Usage\n(minutes played)&quot;) + geom_point(size=4) + ggtitle(&quot;Offensive vs. Defensive RAPTOR Scores for NBA Players in Texas&quot;) + xlab(&quot;Offensive RAPTOR Score (points)&quot;) + ylab(&quot;Defensive RAPTOR Score (points)&quot;) + scale_y_continuous(breaks = seq(-4,3)) + scale_x_continuous(breaks = seq(-3,9)) + theme(panel.background = element_rect(fill = &quot;light blue&quot;))</code></pre>
+<p><img src="../project1_files/figure-html/unnamed-chunk-4-2.png" width="672" /></p>
+<pre class="r"><code>TX %&gt;% ggplot(aes(raptor_offense,raptor_total,color=team,shape=MinutesPlayed_cat)) + labs(color=&quot;Mean RAPTOR\nScore (points)&quot;, shape = &quot;Player Usage\n(minutes played)&quot;) + geom_point(size=4) + ggtitle(&quot;Offensive vs. Overall RAPTOR Scores for NBA Players in Texas&quot;) + xlab(&quot;Offensive RAPTOR Score (points)&quot;) + ylab(&quot;Overall RAPTOR Score (points)&quot;) + scale_y_continuous(breaks = seq(-4,11)) + scale_x_continuous(breaks = seq(-3,9)) + theme(panel.background = element_rect(fill = &quot;light blue&quot;))</code></pre>
+<p><img src="../project1_files/figure-html/unnamed-chunk-4-3.png" width="672" /></p>
+<pre class="r"><code>NBA1 %&gt;% group_by(team) %&gt;% summarize(mean_salary = mean(`2019/20 Salary`), mean_raptor = mean(raptor_total)) %&gt;% ggplot(aes(team,mean_salary,fill=mean_raptor)) + labs(fill=&quot;Mean RAPTOR \nScore (points)&quot;) + geom_bar(stat = &quot;summary&quot;) + theme_linedraw() + theme(axis.text.x = element_text(angle = 75, hjust = 1)) + ggtitle(&quot;Mean Salary and Raptor Score by NBA Team&quot;) + ylab(&quot;Mean Salary (dollars)&quot;) + xlab(&quot;NBA Team&quot;) + scale_fill_gradient2(low=&quot;red&quot;,mid=&quot;purple&quot;,high=&quot;blue&quot;)</code></pre>
+<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
+<pre><code>## No summary function supplied, defaulting to `mean_se()`</code></pre>
+<p><img src="../project1_files/figure-html/unnamed-chunk-4-4.png" width="672" /></p>
+<div id="figure-1-correlation-heatmap" class="section level3">
+<h3>Figure 1: Correlation Heatmap</h3>
+<div id="the-first-visualization-of-this-project-is-a-correlation-heatmap-of-the-7-numeric-variables-of-the-nba-dataset.-the-numeric-variables-are-listed-on-both-the-x-and-y-axes-and-have-specific-correlation-coefficient-values-shown-in-colored-squarestiles-for-each-relationship-between-two-variables.-the-legend-to-the-right-of-the-graph-shows-a-continuum-of-colors-starting-at-white-indicating-no-correlation-coefficient-0-and-ending-at-dark-blue-indicating-a-perfect-correlation-coefficient-1.-perfect-correlations-were-only-seen-between-the-same-variable-on-different-axes-and-were-represented-as-a-dark-blue-colored-tile.-the-majority-of-the-correlation-tiles-were-purple-indicating-a-positive-correlation-between-variables.-the-more-white-a-tile-appears-indicates-a-correlation-coefficient-of-0-and-no-correlation." class="section level4">
+<h4>The first visualization of this project is a correlation heatmap of the 7 numeric variables of the NBA dataset. The numeric variables are listed on both the x and y axes and have specific correlation coefficient values, shown in colored squares/tiles, for each relationship between two variables. The legend to the right of the graph shows a continuum of colors starting at white, indicating no correlation (coefficient = 0), and ending at dark blue, indicating a perfect correlation (coefficient = 1). Perfect correlations were only seen between the same variable on different axes and were represented as a dark blue colored tile. The majority of the correlation tiles were purple, indicating a positive correlation between variables. The more white a tile appears indicates a correlation coefficient of 0 and no correlation.</h4>
+</div>
+<div id="the-correlation-heatmap-shows-that-the-strongest-correlations-not-including-the-same-variables-were-observed-between-the-salary-variables.-the-201920-salary-and-201920-salarymin-variables-had-a-coefficient-of-0.97-the-201920-salary-and-202021-salary-variables-had-a-coefficient-of-0.83-and-the-201920-salarymin-and-202021-salary-variables-had-a-coefficient-of-0.78.-relatively-high-correlations-were-shown-between-raptor_total-and-raptor_offense-0.76-as-well-as-raptor_total-and-raptor_defense-0.62.-the-lowest-correlations-were-between-raptor_offense-and-raptor_defense-with-a-coefficient-of--0.04-and-raptor_defense-and-minutes_played-with-a-coefficient-of--0.01." class="section level4">
+<h4>The correlation heatmap shows that the strongest correlations (not including the same variables) were observed between the salary variables. The 2019/20 Salary and 2019/20 Salary/Min variables had a coefficient of 0.97, the 2019/20 Salary and 2020/21 Salary variables had a coefficient of 0.83, and the 2019/20 Salary/Min and 2020/21 Salary variables had a coefficient of 0.78. Relatively high correlations were shown between raptor_total and raptor_offense (0.76) as well as raptor_total and raptor_defense (0.62). The lowest correlations were between raptor_offense and raptor_defense with a coefficient of -0.04 and raptor_defense and minutes_played with a coefficient of -0.01.</h4>
+</div>
+</div>
+<div id="figure-2-scatterplot" class="section level3">
+<h3>Figure 2: Scatterplot</h3>
+<div id="the-second-visualization-of-this-project-is-a-scatterplot-displaying-the-relationship-between-offensive-raptor-score-and-defensive-raptor-score-for-nba-players-on-either-the-dallas-mavericks-dal-houston-rockets-hou-or-san-antonio-spurs-sas.-these-three-teams-are-located-within-texas-and-altogether-make-up-a-total-of-16-players-of-the-dataset.-each-data-point-is-colored-by-their-team-and-shaped-by-the-range-of-the-number-of-minutes-they-played-throughout-this-past-season.-players-who-played-more-than-2100-minutes-were-considered-high-usage-1800-2100-minutes-were-considered-medium-usage-and-less-than-1800-minutes-were-considered-low-usage.-the-data-indicates-nearly-no-correlation-between-offensive-and-defensive-raptor-scores.-additionally-there-is-no-clear-relationship-between-teams-or-player-usage.-some-potential-results-can-be-seen-however.-it-does-seem-that-sas-players-have-relatively-lower-offensive-raptor-scores-but-relatively-higher-defensive-raptor-scores.-this-same-relationship-of-lower-offensive-raptor-scores-and-higher-defensive-raptor-scores-is-seen-in-low-usage-players.-there-does-not-appear-to-be-a-clear-correlation-between-player-usage-minutes-played-and-total-raptor-score-and-due-to-the-fact-that-minutes_played-was-converted-into-a-categorical-variable-it-is-even-harder-to-see-a-correlation-because-the-exact-minutes-played-values-are-not-used." class="section level4">
+<h4>The second visualization of this project is a scatterplot displaying the relationship between offensive RAPTOR score and defensive RAPTOR score for NBA players on either the Dallas Mavericks (DAL), Houston Rockets (HOU), or San Antonio Spurs (SAS). These three teams are located within Texas and altogether make up a total of 16 players of the dataset. Each data point is colored by their team and shaped by the range of the number of minutes they played throughout this past season. Players who played more than 2100 minutes were considered high usage, 1800-2100 minutes were considered medium usage, and less than 1800 minutes were considered low usage. The data indicates nearly no correlation between offensive and defensive RAPTOR scores. Additionally there is no clear relationship between teams or player usage. Some potential results can be seen however. It does seem that SAS players have relatively lower offensive RAPTOR scores but relatively higher defensive RAPTOR scores. This same relationship of lower offensive RAPTOR scores and higher defensive RAPTOR scores is seen in low usage players. There does not appear to be a clear correlation between player usage (minutes played) and total RAPTOR score, and due to the fact that minutes_played was converted into a categorical variable, it is even harder to see a correlation because the exact minutes played values are not used.</h4>
+</div>
+</div>
+<div id="figure-3-scatterplot-part-2" class="section level3">
+<h3>Figure 3: Scatterplot (part 2)</h3>
+<div id="the-third-visualization-of-this-project-is-another-scatterplot-that-displays-the-relationship-between-offensive-raptor-score-and-overall-raptor-score-for-nba-players-on-the-following-teams-located-in-texas-dal-hou-and-sas.-this-scatterplot-is-the-same-design-as-the-previous-plot-but-replaces-defensive-raptor-with-total-raptor-on-the-y-axis.-total-raptor-was-indicated-to-have-a-relatively-high-correlation-coefficient-with-offensive-raptor.-likewise-the-data-points-are-colored-by-team-and-shaped-by-player-usage-minutes-played.-this-scatterplot-indicates-a-clear-positive-correlation-between-offensive-raptor-scores-and-total-raptor-scores-based-on-data-points-that-appear-diagonal-as-both-variables-increase-or-vice-versa.-all-sas-players-have-offensive-and-total-raptor-scores-around-3-or-less-while-hou-and-dal-players-are-more-spread-out.-in-the-cases-of-hou-and-dal-each-team-has-one-player-who-has-significantly-higher-raptor-scores-than-the-rest.-this-could-indicate-that-hou-and-dal-have-star-players-while-sas-does-not-have-as-clear-of-a-star-player.-all-high-usage-players-have-raptor-scores-greater-than-0-for-both-variables-whereas-medium-and-low-usage-players-both-have-some-players-below-0.-this-indicates-potential-that-players-with-more-minutes-may-have-higher-offensive-and-total-raptor-scores." class="section level4">
+<h4>The third visualization of this project is another scatterplot that displays the relationship between offensive RAPTOR score and overall RAPTOR score for NBA players on the following teams located in Texas: DAL, HOU, and SAS. This scatterplot is the same design as the previous plot, but replaces defensive RAPTOR with total RAPTOR on the y-axis. Total RAPTOR was indicated to have a relatively high correlation coefficient with offensive RAPTOR. Likewise, the data points are colored by team and shaped by player usage (minutes played). This scatterplot indicates a clear positive correlation between offensive RAPTOR scores and total RAPTOR scores, based on data points that appear diagonal as both variables increase or vice versa. All SAS players have offensive and total RAPTOR scores around 3 or less, while HOU and DAL players are more spread out. In the cases of HOU and DAL, each team has one player who has significantly higher RAPTOR scores than the rest. This could indicate that HOU and DAL have star players, while SAS does not have as clear of a star player. All high usage players have RAPTOR scores greater than 0 for both variables, whereas medium and low usage players both have some players below 0. This indicates potential that players with more minutes may have higher offensive and total RAPTOR scores.</h4>
+</div>
+</div>
+<div id="figure-4-bar-graph" class="section level3">
+<h3>Figure 4: Bar Graph</h3>
+<div id="the-fourth-visualization-of-this-project-is-a-bar-graph-displaying-the-mean-salary-of-the-players-on-each-nba-team.-the-thirty-nba-teams-are-displayed-on-the-x-axis-the-teams-mean-201920-salaries-are-displayed-on-the-y-axis-and-the-teams-mean-total-raptor-scores-are-displayed-by-the-color-of-the-bar.-the-legend-shows-that-mean-total-raptor-scores-are-colored-on-a-continuum-from-red-to-purple-to-blue-as-raptor-increases.-the-bar-graph-shows-a-small-positive-correlation-between-salary-and-total-raptor.-it-appears-as-though-teams-with-much-lower-relative-mean-salaries-have-relatively-lower-mean-total-raptor-scores.-the-teams-with-the-highest-mean-total-raptor-scores-do-not-have-the-highest-mean-salaries-but-do-have-relatively-higher-salaries-than-most-teams.-this-of-course-is-different-than-the-correlation-data-from-previous-figures-due-to-the-fact-that-the-observations-were-grouped-and-averaged-into-their-teams.-okc-appears-to-have-the-highest-mean-salary-but-only-an-intermediate-total-raptor-score-whereas-gsw-appears-to-have-the-lowest-mean-salary-but-also-appears-to-have-a-very-low-mean-total-raptor-score." class="section level4">
+<h4>The fourth visualization of this project is a bar graph displaying the mean salary of the players on each NBA team. The thirty NBA teams are displayed on the x-axis, the teams' mean 2019/20 salaries are displayed on the y-axis, and the teams' mean total RAPTOR scores are displayed by the color of the bar. The legend shows that mean total RAPTOR scores are colored on a continuum from red to purple to blue as RAPTOR increases. The bar graph shows a small, positive correlation between salary and total RAPTOR. It appears as though teams with much lower relative mean salaries have relatively lower mean total RAPTOR scores. The teams with the highest mean total RAPTOR scores do not have the highest mean salaries, but do have relatively higher salaries than most teams. This of course is different than the correlation data from previous figures due to the fact that the observations were grouped and averaged into their teams. OKC appears to have the highest mean salary but only an intermediate total RAPTOR score, whereas GSW appears to have the lowest mean salary but also appears to have a very low mean total RAPTOR score.</h4>
+</div>
+</div>
+</div>
+<div id="k-meanspam-clustering" class="section level2">
+<h2>K-means/PAM clustering</h2>
+<pre class="r"><code>NBA2 &lt;- NBA1 %&gt;% select(-1,-2)
+kmeansNBA &lt;- NBA2 %&gt;% kmeans(2)
+kmeansNBA</code></pre>
+<pre><code>## K-means clustering with 2 clusters of sizes 40, 101
+## 
+## Cluster means:
+##   minutes_played raptor_offense raptor_defense raptor_total 2019/20 Salary
+## 1       2017.800      2.1392463      0.5389244   2.67817067       27401552
+## 2       1806.743      0.2359921     -0.2913590  -0.05536691        7146197
+##   2020/21 Salary 2019/20 Salary/Min
+## 1       28915288          13857.271
+## 2        7361190           3999.261
+## 
+## Clustering vector:
+##   [1] 1 2 1 2 1 2 2 2 1 2 2 1 2 2 2 2 2 1 2 2 1 2 2 2 1 2 2 2 2 1 1 2 2 2 2 1 1
+##  [38] 2 2 2 2 2 2 2 2 2 1 2 1 1 2 2 2 1 2 1 2 1 2 1 2 2 2 1 2 1 2 2 2 2 2 1 1 2
+##  [75] 2 2 2 1 2 1 1 2 1 1 2 2 1 2 1 2 2 2 2 2 2 2 2 2 2 1 1 2 2 1 2 2 2 2 2 2 2
+## [112] 2 1 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 1 2 2 1 1 1 2 2 2 1 2 2 2
+## 
+## Within cluster sum of squares by cluster:
+## [1] 3.168002e+15 7.188034e+15
+##  (between_SS / total_SS =  70.8 %)
+## 
+## Available components:
+## 
+## [1] &quot;cluster&quot;      &quot;centers&quot;      &quot;totss&quot;        &quot;withinss&quot;     &quot;tot.withinss&quot;
+## [6] &quot;betweenss&quot;    &quot;size&quot;         &quot;iter&quot;         &quot;ifault&quot;</code></pre>
+<pre class="r"><code>library(cluster)
+sil_width&lt;-vector()
+for(i in 2:10){  
+  kms &lt;- kmeans(NBA2,centers=i)
+  sil &lt;- silhouette(kms$cluster,dist(NBA2))
+  sil_width[i]&lt;-mean(sil[,3])
+}
+ggplot()+geom_line(aes(x=1:10,y=sil_width))+scale_x_continuous(name=&quot;k&quot;,breaks=1:10)</code></pre>
+<pre><code>## Warning: Removed 1 row(s) containing missing values (geom_path).</code></pre>
+<p><img src="../project1_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<pre class="r"><code>pam1 &lt;- NBA2 %&gt;% scale %&gt;% pam(k=2)
+pam1</code></pre>
+<pre><code>## Medoids:
+##      ID minutes_played raptor_offense raptor_defense raptor_total
+## [1,] 84      0.8222068      0.8998511      0.5967667    1.0969709
+## [2,] 26     -0.3717509     -0.4717736     -0.1120392   -0.4435351
+##      2019/20 Salary 2020/21 Salary 2019/20 Salary/Min
+## [1,]      1.8869393       1.459302          1.6317672
+## [2,]     -0.4441889      -0.427061         -0.3964758
+## Clustering vector:
+##   [1] 1 2 1 2 1 2 2 2 1 2 2 1 2 2 2 2 2 1 2 2 2 2 2 2 1 2 2 2 2 1 1 2 2 2 2 1 1
+##  [38] 2 2 2 2 2 2 2 2 2 1 2 1 2 2 2 2 1 2 2 2 1 2 1 2 2 2 1 2 1 2 2 2 2 2 1 1 2
+##  [75] 2 2 2 2 2 1 1 2 1 1 2 2 1 2 1 2 2 2 2 2 2 2 2 2 2 1 1 2 2 2 2 2 2 2 2 2 2
+## [112] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 1 1 2 2 1 1 2 2 2
+## Objective function:
+##    build     swap 
+## 1.995077 1.976531 
+## 
+## Available components:
+##  [1] &quot;medoids&quot;    &quot;id.med&quot;     &quot;clustering&quot; &quot;objective&quot;  &quot;isolation&quot; 
+##  [6] &quot;clusinfo&quot;   &quot;silinfo&quot;    &quot;diss&quot;       &quot;call&quot;       &quot;data&quot;</code></pre>
+<pre class="r"><code>pamfinal &lt;- NBA2 %&gt;% mutate(cluster=as.factor(pam1$clustering))
+
+library(GGally)</code></pre>
+<pre><code>## Registered S3 method overwritten by &#39;GGally&#39;:
+##   method from   
+##   +.gg   ggplot2</code></pre>
+<pre class="r"><code>ggpairs(pamfinal, columns=1:7, aes(color=cluster), upper = list(continuous = wrap(&quot;cor&quot;, size = 2.75))) + theme_grey(base_size = 6)</code></pre>
+<p><img src="../project1_files/figure-html/unnamed-chunk-5-2.png" width="672" /></p>
+<div id="k-meanspam-clustering-1" class="section level3">
+<h3>K-means/PAM Clustering</h3>
+<div id="the-last-part-of-this-project-involved-dimensionality-reduction-using-k-means-and-partitioning-around-medoids-pam-clustering.-this-transformation-of-data-allowed-an-increased-analysis-of-the-nba-dataset-as-it-reduced-the-data-from-multiple-seven-dimensions-and-variables-to-simpler-low-dimensional-comparisons.-this-process-involved-the-scaling-of-the-numeric-data-and-then-the-grouping-of-all-141-observations-into-two-clusters-which-was-supported-by-measuring-the-average-silhouette-widths.-the-highest-average-silhouette-width-was-around-0.67-for-k2-clusters-indicating-that-using-two-clusters-provides-a-reasonable-structure.-the-clusters-were-determined-by-each-data-points-euclidean-distance-from-the-medoid-or-the-center-point-representing-the-clustered-group-of-data.-pam-cluster-analysis-was-then-conducted-on-the-seven-numeric-variables-to-visualize-all-pairwise-combinations-of-the-7-variables." class="section level4">
+<h4>The last part of this project involved dimensionality reduction, using K-means and Partitioning Around Medoids (PAM) clustering. This transformation of data allowed an increased analysis of the NBA dataset, as it reduced the data from multiple (seven) dimensions and variables to simpler, low-dimensional comparisons. This process involved the scaling of the numeric data and then the grouping of all 141 observations into two clusters, which was supported by measuring the average silhouette widths. The highest average silhouette width was around 0.67 for k=2 clusters, indicating that using two clusters provides a reasonable structure. The clusters were determined by each data point's euclidean distance from the medoid, or the center point representing the clustered group of data. PAM cluster analysis was then conducted on the seven numeric variables to visualize all pairwise combinations of the 7 variables.</h4>
+</div>
+<div id="for-most-of-the-pairwise-combination-graphs-the-clusters-were-distinct-with-the-clusters-of-datapoints-separate-from-each-other.-in-some-cases-the-medoids-and-therefore-the-clusters-were-closer-together-and-overlapped.-for-each-interaction-the-total-correlation-coefficient-was-shown-as-well-as-the-correlation-coefficients-of-each-cluster.-pairwise-combinations-with-high-overall-correlation-coefficients-and-high-cluster-correlation-coefficients-appeared-in-a-positively-sloped-diagonal-line-of-data-points.-the-line-of-best-fit-was-clearly-seen-and-the-data-had-a-good-fit-to-it.-the-highest-correlation-coefficients-were-between-the-201920-salary-and-201920-salarymin-variables-with-an-overall-coefficient-of-0.969-and-coefficients-of-0.559-for-one-cluster-and-0.980-for-the-other-cluster.-this-indicates-that-at-lower-salary-values-the-data-was-somewhat-positively-correlated-to-salary-per-minute-values-but-at-higher-salary-values-the-data-was-very-positively-correlated-to-salary-per-minute-values.-in-contrast-pairwise-combinations-that-had-low-correlation-coefficients-appeared-as-more-spread-out-and-messy-with-no-clear-trend.-the-lowest-correlation-coefficients-were-between-the-raptor_defense-and-minutes_played-variables-with-an-overall-coefficient-of--0.012-and-coefficients-of--0.248-and-0.002-for-the-two-clusters.-the-plot-appeared-as-a-wide-horizontal-distribution-with-no-line-of-best-fit-seen.-the-two-clusters-overlap-almost-completely-although-this-was-not-always-the-case-when-there-was-a-minimal-correlation.-as-the-correlation-coefficients-of-the-clusters-are-non-additive-to-the-overall-correlation-coefficient-each-cluster-had-its-own-unique-coefficient.-these-coefficients-therefore-provide-us-greater-information-regarding-the-relationship-between-two-variables-at-two-different-levels-clusters-of-values.-instead-of-showing-a-scatterplot-for-a-pairwise-combination-between-the-same-variable-the-figure-showed-a-grouped-density-plot-demonstrating-the-general-distribution-of-observations-based-on-the-values-of-that-variable-alone.-this-reveals-how-different-the-two-clusters-really-are-when-compared-next-to-each-other-and-measured-in-their-frequency.-these-grouped-density-plots-can-be-applied-to-all-scatterplots-within-the-same-column-to-show-the-general-appearance-of-the-clustered-data-points-and-how-overlapped-or-distinct-they-are-from-each-other." class="section level4">
+<h4>For most of the pairwise combination graphs, the clusters were distinct, with the clusters of datapoints separate from each other. In some cases, the medoids, and therefore the clusters, were closer together and overlapped. For each interaction, the total correlation coefficient was shown, as well as the correlation coefficients of each cluster. Pairwise combinations with high overall correlation coefficients and high cluster correlation coefficients appeared in a positively sloped, diagonal line of data points. The line of best fit was clearly seen and the data had a good fit to it. The highest correlation coefficients were between the 2019/20 Salary and 2019/20 Salary/Min variables with an overall coefficient of 0.969 and coefficients of 0.559 for one cluster and 0.980 for the other cluster. This indicates that at lower salary values, the data was somewhat positively correlated to salary per minute values, but at higher salary values, the data was very positively correlated to salary per minute values. In contrast, pairwise combinations that had low correlation coefficients appeared as more spread out and &quot;messy&quot; with no clear trend. The lowest correlation coefficients were between the raptor_defense and minutes_played variables with an overall coefficient of -0.012 and coefficients of -0.248 and 0.002 for the two clusters. The plot appeared as a wide, horizontal distribution with no line of best fit seen. The two clusters overlap almost completely, although this was not always the case when there was a minimal correlation. As the correlation coefficients of the clusters are non-additive to the overall correlation coefficient, each cluster had its own unique coefficient. These coefficients therefore provide us greater information regarding the relationship between two variables at two different levels (clusters) of values. Instead of showing a scatterplot for a pairwise combination between the same variable, the figure showed a grouped density plot demonstrating the general distribution of observations based on the values of that variable alone. This reveals how different the two clusters really are when compared next to each other and measured in their frequency. These grouped density plots can be applied to all scatterplots within the same column to show the general appearance of the clustered data points and how overlapped or distinct they are from each other.</h4>
+</div>
+</div>
+</div>
+
+              <hr>
+              <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+              </div>
+            </div>
+          </div>
+          <hr>
+        <div class="disqus">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+
+    (function() {
+      
+      
+      if (window.location.hostname == "localhost")
+        return;
+
+      var disqus_shortname = '';
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+        </div>
+      </div>
+      
+    </div>
+
+    
+    <footer>
+  <div id="footer">
+    <div class="container">
+      <p class="text-muted">&copy; All rights reserved. Powered by <a href="https://gohugo.io/">Hugo</a> and
+      <a href="http://www.github.com/nurlansu/hugo-sustain/">sustain</a> with ♥</p>
+    </div>
+  </div>
+</footer>
+<div class="footer"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="../js/docs.min.js"></script>
+<script src="../js/main.js"></script>
+
+<script src="../js/ie10-viewport-bug-workaround.js"></script>
+
+
+    
+  </body>
+</html>

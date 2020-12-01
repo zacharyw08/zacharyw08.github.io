@@ -1,0 +1,158 @@
+---
+title: 'SDS 348 Project 1: NBA Player Efficiency and Salaries '
+author: "SDS348"
+date: '2020-10-03'
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+#### By: Zachary Wong zpw97
+
+
+## Introduction
+####  The datasets that I chose for this project relate to NBA basketball players. I chose these because I am a huge fan of sports, especially basketball. I often find myself watching games and intensely evaluating box scores for players' statistics. I find it incredibly interesting to see how players statistics (points, rebounds, assists) fluctuate over the course of the season and throughout their careers. These statistics often reflect a player's worth to the team and therefore their contracts and salaries. This project is a great opportunity to apply what I have learned about data science in class to the real-world scenario of sports that I enjoy and find interesting. These datasets contain information regarding current NBA players' offensive, defensive, and total efficiency ratings measured by a metric called RAPTOR, as well as their current salaries from their contracts. I predict that players with higher salaries will have higher RAPTOR scores, implying that they are being paid more due to the fact that they are more efficient players. Additionally I predict that offensive and defensive RAPTOR scores will not be directly correlated, as some players are especially proficient on only side of the court.
+
+####  One dataset that I chose was acquired from Five Thirty Eight, a website with many datasets related to sports, politics, economics, and more. The dataset examines individual player efficiency of NBA basketball players by using a metric called RAPTOR, which is measured in basketball points. This metric was created by Five Thirty Eight and is based on the amount of points the player is directly or indirectly responsible for while in the game on both offense and defense. The RAPTOR dataset contains many variables, but the following will be selectively used in this project: player name, minutes played, NBA team, offensive RAPTOR score, defensive RAPTOR score, and total RAPTOR score. The second dataset that I chose was acquired from the Hoops Hype website. This dataset details the players' yearly salaries for this past season (2019/2020) through the 2022/2023 season. As each player has a unique contract, some players will contain values of $0 for salaries in the next few years if their current contract does not guarantee a salary through that year. The dataset contains the following variables: player name, 2019/20 salary, 2020/21 salary, 2021/22 salary, and 2022/23 salary. For the purpose of this project only the player name, 2019/20 salary, and 2020/21 salary variables are used. Salaries are measured in US dollars.
+
+
+
+##Joining/Merging
+```{r}
+library(readr)
+library(tidyverse)
+nba_raptor <- read_csv("NBAPlayersRAPTOR.csv")
+nba_salary <- read_csv("NBASalary.csv")
+glimpse(nba_raptor)
+glimpse(nba_salary)
+
+raptor <- nba_raptor %>% filter(mp >= 1400) %>% select(player_name, team, mp, raptor_offense, raptor_defense, raptor_total)
+glimpse(raptor)
+salary <- nba_salary %>% select(Player,`2019/20`,`2020/21`)
+salary <- salary %>% rename("2019/20 Salary"="2019/20","2020/21 Salary"="2020/21")
+glimpse(salary)
+
+NBA <- raptor %>% inner_join(salary, by=c('player_name'='Player'))
+NBA <- NBA %>% rename("player"="player_name")
+NBA$`2019/20 Salary` = as.numeric(gsub("[\\$,]", "", NBA$`2019/20 Salary`))
+NBA$`2020/21 Salary` = as.numeric(gsub("[\\$,]", "", NBA$`2020/21 Salary`))
+glimpse(NBA)
+```
+
+#### The two datasets "raptor" and "salary" were joined to form a merged dataset called "NBA" using the dplyr join function of inner_join, which kept only the rows that have a match for the ID variable. The ID variable in this case is the name of the NBA player. I chose this join because it keeps all the data from both datasets as long as it had a match for player name. The "raptor" dataset included all players with 1400 or more minutes played in the 2020 season. This limited the observations to a manageable amount of 156 observations of 6 variables. The "salary" dataset included all NBA players with active contracts. This dataset had a total of 581 observations of 3 variables. Even though there were originally more observations in "salary", only observations that had matches in the "raptor" dataset were included. This resulted in 141 observations (NBA players) of 8 variables: player, team, mp (minutes played), raptor_offense, raptor_defense, raptor_total, 2019/20 Salary, and 2020/21 Salary. The cases that were dropped were those that did not have matches in both datasets, meaning that the NBA player was included in one of the datasets (either raptor or salary) but not the other. A reason for them not being included in both datasets is that they did not play more than 1400 minutes during the season and/or do not have an active contract with a salary. A potential problem is that the entirety of the NBA is not included in the project, meaning that the trends found by the selected statistics included in this problem may not be representative of the entire population (the NBA).
+
+
+
+##Wrangling with dplyr functions
+```{r}
+NBA <- NBA %>% mutate("2019/20 Salary/Min" = `2019/20 Salary`/mp)
+NBA1 <- NBA %>% rename("minutes_played"="mp")
+NBA1 %>% filter(team == "SAS")
+NBA1 %>% filter(team == "SAS") %>% select(player,raptor_total,`2019/20 Salary`, `2019/20 Salary/Min`)
+NBA1 %>% filter(team == "SAS") %>% select(player,raptor_total,`2019/20 Salary`, `2019/20 Salary/Min`) %>% arrange(-raptor_total)
+NBA1 %>% group_by(team) %>% summarize(mean_raptor_total=mean(raptor_total), sd_raptor_total=sd(raptor_total))
+```
+
+##Summary statistics
+```{r}
+NBA1 %>% group_by(team) %>% summarize_if(is.numeric,list(mean=mean,sd=sd)) %>% mutate_if(is.numeric, round) %>% pivot_longer(-1) %>% pivot_wider(names_from=team,values_from="value")
+
+NBA1 %>% summarize_all(n_distinct)
+NBA1 %>% group_by(team) %>% summarize_all(n_distinct) %>% select(-player)
+
+NBA1 %>% summarize_if(is.numeric, mean)
+NBA1 %>% group_by(team) %>% summarize_if(is.numeric,mean)
+NBA1 %>% filter(team=="SAS") %>% summarize_if(is.numeric,mean) %>% select(-minutes_played)
+
+NBA1 %>% summarize_if(is.numeric,sd)
+NBA1 %>% group_by(team) %>% summarize_if(is.numeric,sd)
+
+NBA1 %>% summarize_if(is.numeric,var)
+NBA1 %>% group_by(team) %>% summarize_if(is.numeric,var) %>% arrange(desc(raptor_total))
+
+NBA1 %>% summarize_if(is.numeric,list(min=min,max=max)) 
+NBA1 %>% group_by(team) %>% summarize_if(is.numeric, list(min=min,max=max)) %>% mutate_if(is.numeric,round) %>% pivot_longer(-1)
+
+NBA1 %>% summarize_if(is.numeric, list(Q3=quantile), probs=.75)
+NBA1 %>% group_by(team) %>% summarize_if(is.numeric, list(Q3=quantile), probs=.75) %>% mutate_if(is.numeric,round) %>% pivot_longer(-1)
+
+NBA1 %>% summarize(count=n())
+NBA1 %>% group_by(team) %>% summarize(count=n())
+
+corNBA <- NBA1 %>% select(-1,-2) %>% cor 
+corNBA
+corNBA <- corNBA %>% as.data.frame
+```
+
+#### The merged NBA dataset was first mutated to create a ninth variable that was a function of the "2019/20 Salary" variable divided by the "minutes_played" variable. The new variable is the NBA players' 2019/20 Salary per minute and is called "2019/20 Salary/Min". This new dataset was filtered (using the dplyr "filter" function) to only show the data for players on the San Antonio Spurs team. There were 6 SAS players. This filtered dataset was then reduced to only some of the dataset's variables using the dplyr "select" function and then arranged in descending order of total raptor score using the dplyr "arrange" function. It was revealed that Derrick White, the Spurs player with the highest total RAPTOR score, had the lowest salary in 2019/20. This was not a direct correlation however, as Demar Derozan, the Spurs player with the highest salary in 2019/20, had the third highest total RAPTOR score. The dataset was finally grouped by team and summarized, using the dplyr "summarize" function, to give the mean and standard deviation of each NBA teams' (made up of players/observations) overall RAPTOR scores. The team with the highest mean total RAPTOR score was the Los Angeles Clippers (LAC, 4.8 points) and the team with the highest standard deviation was the Houston Rockets (HOU, 5.8 points).
+
+#### The NBA dataset was then pivoted longer and pivoted wider to show the mean and standard deviations of all seven numeric variables by team in an easy-to-read table. Summary statistics (summarize, summarize_if, summarize_all) functions were then applied to the dataset to determine the overall mean, standard deviation, distinct values, variation, minimum values, maximum values, third quartile values, and number of all variables for all observations. The same summary statistics were also applied after being grouped by teams, so that the same summary statistics were shown for each team. Finally, a correlation matrix was created for all 7 numeric variables and converted into a data frame. High correlation coefficients were found between offensive RAPTOR and total RAPTOR, 2019/20 salary and 2020/21 salary, and 2019/20 salary and 2019/20 salary per minute. This implies that a player's total RAPTOR score is most correlated with their offensive RAPTOR score. Due to the fact that total RAPTOR is calculated by offensive RAPTOR plus defensive RAPTOR, this correlation indicates that most NBA players' offensive game is indicative of their game as a whole. The correlations in salaries between the two years are high most likely due to the fact that an NBA contract is divided up fairly equally throughout its duration. As 2019/20 salary per minute is a function of 2019/20 salary, a high correlation coefficient was expected.
+
+
+
+##Visualizing
+```{r}
+tidycorNBA <- corNBA %>% rownames_to_column("Variable1") %>% pivot_longer(-1, names_to = "Variable2",values_to="correlation")
+tidycorNBA %>% ggplot(aes(Variable1,Variable2, fill=correlation)) + labs(fill="Correlation\nCoefficient") + geom_tile() + scale_fill_gradient2(low="red",mid="white",high="blue") + geom_text(aes(label=round(correlation,2)), color = "black", size=3) + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + coord_fixed() + ggtitle("Correlation Heatmap") + xlab("Variable 1") + ylab("Variable 2") + theme(plot.title = element_text(hjust = 0.5))
+
+
+NBAusage <- NBA1 %>% mutate(MinutesPlayed_cat = case_when(minutes_played>2100 ~ "high usage", minutes_played<=2100 & minutes_played>=1800 ~ "medium usage", minutes_played<1800 ~ "low usage"))
+glimpse(NBAusage)
+TX <- NBAusage %>% filter(team == "HOU" | team == "DAL" | team =="SAS")
+TX %>% ggplot(aes(raptor_offense,raptor_defense,color=team,shape=MinutesPlayed_cat)) + labs(color="Mean RAPTOR\nScore (points)", shape = "Player Usage\n(minutes played)") + geom_point(size=4) + ggtitle("Offensive vs. Defensive RAPTOR Scores for NBA Players in Texas") + xlab("Offensive RAPTOR Score (points)") + ylab("Defensive RAPTOR Score (points)") + scale_y_continuous(breaks = seq(-4,3)) + scale_x_continuous(breaks = seq(-3,9)) + theme(panel.background = element_rect(fill = "light blue"))
+
+TX %>% ggplot(aes(raptor_offense,raptor_total,color=team,shape=MinutesPlayed_cat)) + labs(color="Mean RAPTOR\nScore (points)", shape = "Player Usage\n(minutes played)") + geom_point(size=4) + ggtitle("Offensive vs. Overall RAPTOR Scores for NBA Players in Texas") + xlab("Offensive RAPTOR Score (points)") + ylab("Overall RAPTOR Score (points)") + scale_y_continuous(breaks = seq(-4,11)) + scale_x_continuous(breaks = seq(-3,9)) + theme(panel.background = element_rect(fill = "light blue"))
+
+
+NBA1 %>% group_by(team) %>% summarize(mean_salary = mean(`2019/20 Salary`), mean_raptor = mean(raptor_total)) %>% ggplot(aes(team,mean_salary,fill=mean_raptor)) + labs(fill="Mean RAPTOR \nScore (points)") + geom_bar(stat = "summary") + theme_linedraw() + theme(axis.text.x = element_text(angle = 75, hjust = 1)) + ggtitle("Mean Salary and Raptor Score by NBA Team") + ylab("Mean Salary (dollars)") + xlab("NBA Team") + scale_fill_gradient2(low="red",mid="purple",high="blue")
+
+```
+
+### Figure 1: Correlation Heatmap
+#### The first visualization of this project is a correlation heatmap of the 7 numeric variables of the NBA dataset. The numeric variables are listed on both the x and y axes and have specific correlation coefficient values, shown in colored squares/tiles, for each relationship between two variables. The legend to the right of the graph shows a continuum of colors starting at white, indicating no correlation (coefficient = 0), and ending at dark blue, indicating a perfect correlation (coefficient = 1). Perfect correlations were only seen between the same variable on different axes and were represented as a dark blue colored tile. The majority of the correlation tiles were purple, indicating a positive correlation between variables. The more white a tile appears indicates a correlation coefficient of 0 and no correlation.
+#### The correlation heatmap shows that the strongest correlations (not including the same variables) were observed between the salary variables. The 2019/20 Salary and 2019/20 Salary/Min variables had a coefficient of 0.97, the 2019/20 Salary and 2020/21 Salary variables had a coefficient of 0.83, and the 2019/20 Salary/Min and 2020/21 Salary variables had a coefficient of 0.78. Relatively high correlations were shown between raptor_total and raptor_offense (0.76) as well as raptor_total and raptor_defense (0.62). The lowest correlations were between raptor_offense and raptor_defense with a coefficient of -0.04 and raptor_defense and minutes_played with a coefficient of -0.01.
+
+
+### Figure 2: Scatterplot
+#### The second visualization of this project is a scatterplot displaying the relationship between offensive RAPTOR score and defensive RAPTOR score for NBA players on either the Dallas Mavericks (DAL), Houston Rockets (HOU), or San Antonio Spurs (SAS). These three teams are located within Texas and altogether make up a total of 16 players of the dataset. Each data point is colored by their team and shaped by the range of the number of minutes they played throughout this past season. Players who played more than 2100 minutes were considered high usage, 1800-2100 minutes were considered medium usage, and less than 1800 minutes were considered low usage. The data indicates nearly no correlation between offensive and defensive RAPTOR scores. Additionally there is no clear relationship between teams or player usage. Some potential results can be seen however. It does seem that SAS players have relatively lower offensive RAPTOR scores but relatively higher defensive RAPTOR scores. This same relationship of lower offensive RAPTOR scores and higher defensive RAPTOR scores is seen in low usage players. There does not appear to be a clear correlation between player usage (minutes played) and total RAPTOR score, and due to the fact that minutes_played was converted into a categorical variable, it is even harder to see a correlation because the exact minutes played values are not used.
+
+### Figure 3: Scatterplot (part 2)
+#### The third visualization of this project is another scatterplot that displays the relationship between offensive RAPTOR score and overall RAPTOR score for NBA players on the following teams located in Texas: DAL, HOU, and SAS. This scatterplot is the same design as the previous plot, but replaces defensive RAPTOR with total RAPTOR on the y-axis. Total RAPTOR was indicated to have a relatively high correlation coefficient with offensive RAPTOR. Likewise, the data points are colored by team and shaped by player usage (minutes played). This scatterplot indicates a clear positive correlation between offensive RAPTOR scores and total RAPTOR scores, based on data points that appear diagonal as both variables increase or vice versa. All SAS players have offensive and total RAPTOR scores around 3 or less, while HOU and DAL players are more spread out. In the cases of HOU and DAL, each team has one player who has significantly higher RAPTOR scores than the rest. This could indicate that HOU and DAL have star players, while SAS does not have as clear of a star player. All high usage players have RAPTOR scores greater than 0 for both variables, whereas medium and low usage players both have some players below 0. This indicates potential that players with more minutes may have higher offensive and total RAPTOR scores.
+
+
+### Figure 4: Bar Graph
+#### The fourth visualization of this project is a bar graph displaying the mean salary of the players on each NBA team. The thirty NBA teams are displayed on the x-axis, the teams' mean 2019/20 salaries are displayed on the y-axis, and the teams' mean total RAPTOR scores are displayed by the color of the bar. The legend shows that mean total RAPTOR scores are colored on a continuum from red to purple to blue as RAPTOR increases. The bar graph shows a small, positive correlation between salary and total RAPTOR. It appears as though teams with much lower relative mean salaries have relatively lower mean total RAPTOR scores. The teams with the highest mean total RAPTOR scores do not have the highest mean salaries, but do have relatively higher salaries than most teams. This of course is different than the correlation data from previous figures due to the fact that the observations were grouped and averaged into their teams. OKC appears to have the highest mean salary but only an intermediate total RAPTOR score, whereas GSW appears to have the lowest mean salary but also appears to have a very low mean total RAPTOR score. 
+
+
+
+##K-means/PAM clustering
+```{r}
+NBA2 <- NBA1 %>% select(-1,-2)
+kmeansNBA <- NBA2 %>% kmeans(2)
+kmeansNBA
+
+library(cluster)
+sil_width<-vector()
+for(i in 2:10){  
+  kms <- kmeans(NBA2,centers=i)
+  sil <- silhouette(kms$cluster,dist(NBA2))
+  sil_width[i]<-mean(sil[,3])
+}
+ggplot()+geom_line(aes(x=1:10,y=sil_width))+scale_x_continuous(name="k",breaks=1:10)
+
+pam1 <- NBA2 %>% scale %>% pam(k=2)
+pam1
+pamfinal <- NBA2 %>% mutate(cluster=as.factor(pam1$clustering))
+
+library(GGally)
+ggpairs(pamfinal, columns=1:7, aes(color=cluster), upper = list(continuous = wrap("cor", size = 2.75))) + theme_grey(base_size = 6)
+
+```
+
+### K-means/PAM Clustering
+#### The last part of this project involved dimensionality reduction, using K-means and Partitioning Around Medoids (PAM) clustering. This transformation of data allowed an increased analysis of the NBA dataset, as it reduced the data from multiple (seven) dimensions and variables to simpler, low-dimensional comparisons. This process involved the scaling of the numeric data and then the grouping of all 141 observations into two clusters, which was supported by measuring the average silhouette widths. The highest average silhouette width was around 0.67 for k=2 clusters, indicating that using two clusters provides a reasonable structure. The clusters were determined by each data point's euclidean distance from the medoid, or the center point representing the clustered group of data. PAM cluster analysis was then conducted on the seven numeric variables to visualize all pairwise combinations of the 7 variables.
+
+#### For most of the pairwise combination graphs, the clusters were distinct, with the clusters of datapoints separate from each other. In some cases, the medoids, and therefore the clusters, were closer together and overlapped. For each interaction, the total correlation coefficient was shown, as well as the correlation coefficients of each cluster. Pairwise combinations with high overall correlation coefficients and high cluster correlation coefficients appeared in a positively sloped, diagonal line of data points. The line of best fit was clearly seen and the data had a good fit to it. The highest correlation coefficients were between the 2019/20 Salary and 2019/20 Salary/Min variables with an overall coefficient of 0.969 and coefficients of 0.559 for one cluster and 0.980 for the other cluster. This indicates that at lower salary values, the data was somewhat positively correlated to salary per minute values, but at higher salary values, the data was very positively correlated to salary per minute values. In contrast, pairwise combinations that had low correlation coefficients appeared as more spread out and "messy" with no clear trend. The lowest correlation coefficients were between the raptor_defense and minutes_played variables with an overall coefficient of -0.012 and coefficients of -0.248 and 0.002 for the two clusters. The plot appeared as a wide, horizontal distribution with no line of best fit seen. The two clusters overlap almost completely, although this was not always the case when there was a minimal correlation. As the correlation coefficients of the clusters are non-additive to the overall correlation coefficient, each cluster had its own unique coefficient. These coefficients therefore provide us greater information regarding the relationship between two variables at two different levels (clusters) of values. Instead of showing a scatterplot for a pairwise combination between the same variable, the figure showed a grouped density plot demonstrating the general distribution of observations based on the values of that variable alone. This reveals how different the two clusters really are when compared next to each other and measured in their frequency. These grouped density plots can be applied to all scatterplots within the same column to show the general appearance of the clustered data points and how overlapped or distinct they are from each other.

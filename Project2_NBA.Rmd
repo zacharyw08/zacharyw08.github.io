@@ -1,0 +1,303 @@
+---
+title: 'SDS 348 Project 2: Modeling, Testing, and Predicting NBA RAPTOR Scores'
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+hook_output = knit_hooks$get('output')
+knit_hooks$set(output = function(x, options) {
+  # this hook is used only when the linewidth option is not NULL
+  if (!is.null(n <- options$linewidth)) {
+    x = knitr:::split_lines(x)
+    # any lines wider than n should be wrapped
+    if (any(nchar(x) > n)) x = strwrap(x, width = n)
+    x = paste(x, collapse = '\n')
+  }
+  hook_output(x, options)
+})
+
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE,fig.align="center",warning=FALSE,message=FALSE,fig.width=8, fig.height=5, linewidth=60)
+options(tibble.width = 100,width = 100)
+library(tidyverse)
+```
+#### By: Zachary Wong zpw97
+
+### Introduction
+#####  The dataset that I chose for this project relates to the efficiency statistics of NBA players. This dataset is one of the datasets that I used for project 1, which I chose because I am a huge basketball fan and enjoy researching how players contribute to the team through their statistics. The specific dataset came from the Five Thirty Eight website, which provides many datasets related to sports, politics, economics, and more. The dataset examines individual player efficiency of NBA basketball players by using a metric called RAPTOR, which is measured in basketball points. This metric was created by Five Thirty Eight and is based on the amount of points the player is directly or indirectly responsible for while in the game on both offense and defense. The RAPTOR dataset has 250 observations and contains many variables, but the following eight will be selectively used in this project: player, team, position, minutes played, offensive RAPTOR score, defensive RAPTOR score, total RAPTOR score, and WAR (wins above replacement). 
+#####  The observations are the names of NBA players who have played over 1,025 minutes this past regular and postseason. The cutoff of 1,025 minutes was enforced to only use a manageable portion of the hundreds of NBA players in the league. The team variable is categorical and classifies the NBA team that the player played on during this past 2019-2020 season. The position variable is categorical and classifies the player's primary position, which could be one of 5 categories: point guard, shooting guard, small forward, power forward, and center. The minutes played variable is numeric and gives the total number of minutes the player played during the season. The offensive RAPTOR and defensive RAPTOR scores are measured in basketball points and essentially give the number of points that the player accounted for. In terms of offensive RAPTOR, the player could account for points by scoring or assisting. In terms of defensive RAPTOR, the player could account for points by preventing the other team from scoring. These two RAPTOR scores are additive and combine into the numeric total raptor variable, which is an overall measurement of the player's contribution in terms of basketball points during the game. WAR is another numeric variable, which is measured in "wins" and is essentially the number of additional wins that the team has gained above the expected amount if they were substituted with a replacement player. Therefore, a WAR value of 10 indicates that the specific player has accounted for 10 additional wins for his team, none of which would have occurred if his replacement was playing.
+
+
+```{r}
+library(readr)
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+raptor <- read_csv("raptordata_positions.csv")
+raptor <- raptor %>% select(-1,-6,-7,-8,-9,-10,-11)
+raptor <- raptor %>% mutate(war_win = case_when(war > 3 ~ TRUE, war <= 3 ~ FALSE))
+```
+
+```{r}
+#MANOVA Assumptions
+library(rstatix)
+group <- raptor$position 
+DVs <- raptor %>% select(offensiveraptor,defensiveraptor,totalraptor,minutes,war)
+
+sapply(split(DVs,group), mshapiro_test)
+# Multivariate normality assumption is not met for any group!
+box_m(DVs, group)
+# Homogeneity of covariance matrices assumption is not met!
+
+
+#Actual MANOVA test
+man1 <- manova(cbind(offensiveraptor,defensiveraptor,totalraptor,minutes,war)~position, data=raptor)
+summary(man1)
+
+summary.aov(man1)
+
+raptor %>% group_by(position) %>% summarize(mean(offensiveraptor), mean(defensiveraptor))
+
+pairwise.t.test(raptor$offensiveraptor, raptor$position, p.adj="none")
+pairwise.t.test(raptor$defensiveraptor, raptor$position, p.adj="none")
+
+raptor %>% select(position, offensiveraptor, defensiveraptor) %>% 
+  pivot_longer(-1,names_to='DV', values_to='measure') %>% ggplot(aes(position,measure,fill=position)) + 
+  geom_bar(stat="summary")+geom_errorbar(stat="summary", width=.5) + facet_wrap(~DV, nrow=2) + 
+  coord_flip() + ylab("") + theme(legend.position = "none")
+
+#Type I error occurence probability for 26 tests (1 MANOVA, 5 ANOVA, 20 t-tests)
+set.seed(348)
+Type1Error <- replicate(5000,{
+  pvals <- NULL
+   for(i in 1:26){
+    samp1 <- rnorm(20,mean=0)
+    samp2 <- rnorm(20,mean=0)
+    pvals[i] <- t.test(samp1,samp2,var.eq=T)$p.val
+   }
+  sum(pvals<.05)
+})
+mean(Type1Error>0)
+
+#Bonferroni Correction
+0.05/26
+```
+
+##### Before conducting the MANOVA, the assumptions were assessed. These assumptions are random sampling, independent observations, multivariate normality of dependent variables, homogeneity of within-group covariance matrices, linear relationship among dependent variables, no extreme univariate or multivariate outliers, and no multicollinearity. Due to the large amount of assumptions and the somewhat organized dataset being used, there is a very small chance that all of these assumptions were met. While the samples are all independent observations, the NBA players were not chosen at random, but rather by a threshold of 1,025 minutes played in the 2020 season. Additionally, the Shapiro-Wilk Test was conducted and revealed that the multivariate normality assumption was not met, as the p-values for all five positions were less than 0.05. This means that the null hypothesis that the dependent variables are normally distributed was rejected. Due to the fact that this assumption was rejected, it is clear that the assumptions for this MANOVA are not met. Additionally, a Box's M Test revealed that the assumption for equivalent covariance matrices was not met.
+
+##### The MANOVA was conducted on all of the numeric variables in an attempt to see if there was a significant mean difference across levels of the categorical variable of position. The MANOVA was revealed to be significant, with a p-value of 4.96e-07. Due to the fact that five numeric variables were included in the MANOVA, five individual univariate ANOVAs had to be conducted to determine which variables were actually significant. The univariate ANOVAs revealed that only two of the numeric variables had significant p-values (even below the current Bonferroni's correction p-value of 0.05/6 = 0.0083). The offensive RAPTOR variable yielded a p-value of 0.00015 and the defensive RAPTOR variable yielded a value of 1.342e-08. As there are five groups within the categorical variable of position, post-hoc t-tests were then conducted to determine which groups differed in these two significant numeric variables. For offensive RAPTOR, the positions of point guard and power forward, as well as point guard and center differed significantly, with p-values of 0.00012 and 0.00049, both of which are less than the Bonferroni's correction p-value of 0.001923 (which is equal to 0.05/26). For defensive RAPTOR, the center position significantly differed from all other positions, with p-values of 6.8e-05 between C and PF, 2.3e-09 between C and PG, 5.8e-05 between C and SF, and 2.2e-08 between C and SG. These p-values are all less than the Bonferroni's correction p-value of 0.001923 (which is equal to 0.05/26).
+
+##### Due to the fact that 26 tests were performed by the end of the process, there is a 0.7436 proportion that there is at least one type I error. As the probability that there was a type I error increases as the number of tests increases, this is believable. The 26 total tests were 1 MANOVA, 5 one-way ANOVAs (offensive RAPTOR and defensive RAPTOR were the only significant results), and 20 t-tests (10 for offensive, 10 for defensive). The Bonferroni correction for a total of 23 tests is 0.05/26, resulting in the p-value 0.001923.
+
+
+###Randomization Test 
+```{r}
+ggplot(raptor,aes(totalraptor,fill=position))+geom_histogram(bins=6.5)+
+  facet_wrap(~position,ncol=2)+theme(legend.position="none")
+
+raptor %>% group_by(position) %>% summarize(mean(totalraptor))
+1.2175 - -0.3226415      #mean difference in totalraptor between C and PF is 1.5401
+
+set.seed(1234)
+rand_dist<-vector()
+for(i in 1:5000){
+new <- data.frame(totalraptor=sample(raptor$totalraptor), position=raptor$position)
+rand_dist[i] <- mean(new[new$position == "C",]$totalraptor) - mean(new[new$position == "PF",]$totalraptor)} 
+{hist(rand_dist, main = "", ylab = ""); abline(v = c(-1.5401, 1.5401), col = "red")}
+
+mean(rand_dist > 1.5401 | rand_dist < -1.5401)
+
+t.test(data=raptor,totalraptor~position=="C" | position =="PF")
+```
+##### A randomization test of the mean difference in total RAPTOR scores between NBA players primarily classified as centers and NBA players primarily classified as power forwards was conducted through the use of a two-sample t-test. These two positions were used for the mean difference statistic because they were found to have the two most different mean total RAPTOR scores amongst the five basketball positions. The null hypothesis (H0) of the t-test was that there is no significant difference between the mean total RAPTOR score of NBA centers and the mean total RAPTOR score of NBA power forwards. The alternative hypothesis (HA) of the t-test was that there is a significant difference between the mean total RAPTOR score of NBA centers and the mean total RAPTOR score of NBA power forwards.
+##### The mean difference in total RAPTOR between centers and power forwards is 1.5401 points. A randomization test with 5000 simulated distributions was performed to determine the probability of getting a mean difference as extreme as this observed difference (1.5401) if there is truly no difference between centers and power forwards in their total RAPTOR scores. The two-sample t-test resulted in a p-value of 0.9362. The calculated two-tailed p-value found by determining the mean of the values greater or less than the test statistic was 0.0068. This is much less than the t-test calculated p-value, indicating a rejection of the null hypothesis and a significant difference between the total RAPTOR scores of centers and power forwards.
+
+
+###Linear Regression Model
+```{r}
+raptor$minutes_c <- raptor$minutes - mean(raptor$minutes)
+fitraptor <- lm(totalraptor ~ position * minutes_c, data=raptor)
+summary(fitraptor)
+
+library(interactions)
+raptor %>% ggplot(aes(minutes_c,totalraptor,color=position)) + geom_point() + geom_smooth(method="lm", se=F) + ggtitle("Linear Regression of Minutes Played and Position on Total RAPTOR") + xlab("Minutes Played (mean-centered)") + ylab("Total RAPTOR Score (points)") + labs(color="Basketball \nPosition")
+
+
+#Assumptions for Linear Regression
+resids<-fitraptor$residuals
+fitvals<-fitraptor$fitted.values
+plot(fitvals,resids); abline(h=0, col='red')
+par(mfrow=c(1,2)); hist(resids); qqnorm(resids); qqline(resids, col='red')
+library(sandwich)
+library(lmtest)
+bptest(fitraptor)
+
+#Recomputation of results with Robust Standard Errors
+summary(fitraptor)
+coeftest(fitraptor, vcov = vcovHC(fitraptor))
+```
+#####  After conducting the linear regression, many coefficients were generated. The intercept gives a coefficient of 1.434, indicating that the predicted total RAPTOR for a Center with average minutes played is 1.434 points. Controlling for minutes played, total RAPTOR for players who are power forwards (PF) is on average 1.562 points less than players who are centers (t = -2.969, df = 240, p = 0.0033). Controlling for minutes played, total RAPTOR for players who are point guards (PG) is on average 1.056 points less than players who are centers (t = -2.018, df = 240, p = 0.0447). Controlling for minutes played, total RAPTOR for players who are small forwards is on average 1.471 points less than players who are centers (t = -2.792, df = 240, p = 0.0057). Controlling for minutes played, total RAPTOR for players who are shooting guards is on average 1.442 points less than players who are centers (t = -2.761, df = 240, p = 0.0062). Controlling for position, NBA players' RAPTOR scores show an average increase of 0.00165 points for every minute increase in minutes played (t = 2.387, df = 240, p = 0.0178). The slope for mean-centered minutes played on total RAPTOR is 0.000192 greater for power forwards compared to centers (t = 0.189, df = 240, p = 0.8502). The slope for mean-centered minutes played on total RAPTOR is 0.000820 greater for point guards compared to centers (t = 0.747, df = 240, p = 0.4556). The slope for mean-centered minutes played on total RAPTOR is 0.001167 greater for small forwards compared to centers (t = 1.175, df = 240, p = 0.2413). The slope for mean-centered minutes played on total RAPTOR is 0.001474 greater for shooting guards compared to centers (t = 1.516, df = 240, p = 0.1308).
+
+#####  The assumptions of linear regression are independent observations, random sampling, a linear relationship between predictor and response variables, normally distributed residuals, and homoskedasticity, or equal variance of points/residuals along regression line. While each NBA player was an independent observation, technically the dataset was not randomly sampled from the entire NBA population. For the purposes of this project, however I believe it can be considered random sampling (just from those players who played significant minutes). The more statistial assumptions are all met however, shown by an equal distribution of points on the scatterplot (linearity assumption), a normal distribution on the histogram of residuals (normality assumption), and a non-significant p-value in the Breusch-Pagan test, indicating that the test failed to reject the null hypothesis of homoskedasticity. Even though all assumptions were technically met for the linear regression, the regression results were recomputed with robust standard errors. The standard errors remained nearly the same values, increasing or decreasing by less than 0.5, because the assumption for homoskedasticity was previously met. If the data was not homoskedastic (Breusch-Pagan null hypothesis was rejected) to begin with, the standard errors would have increased while holding the estimates and p-values roughly the same. In this case, robust standard errors would have allowed the model to meet the assumption of homoskedasticity. 
+
+#####  This model explains 21.54% (.2154 proportion) of the variation in the outcome, as shown by the multiple R-squared value which assumes no chance association. If we account for chance association between mean-centered minutes and position, the adjusted R-squared value says that the model explains 18.6% (0.186 proportion) of the variation in the outcome.
+
+
+### Linear Regression Model Pt. 2
+```{r}
+fitraptor <- lm(totalraptor ~ position * minutes_c, data=raptor)
+summary(fitraptor)
+
+#Recomputation of results with Bootstrapped Standard Errors - resampling residuals
+fit1 <- lm(totalraptor ~ position * minutes_c, data = raptor)
+resids1 <- fit1$residuals
+fitted1 <- fit1$fitted.values
+   
+resid_resamp <- replicate(500,{
+  new_resids <- sample(resids1,replace=TRUE)
+  raptor$new_y <- fitted1 + new_resids
+  fit1 <- lm(new_y ~ position * minutes_c, data = raptor)
+  coef(fit1)
+}) 
+resid_resamp %>% t %>% as.data.frame %>% summarize_all(sd)
+
+resid_resamp %>% t %>% as.data.frame %>% pivot_longer(1:10) %>% group_by(name) %>% summarize(lower=quantile(value,.025), upper=quantile(value,.975))
+```
+
+#####  After computing bootstrapped standard errors, by resampling residuals, the standard errors of residuals were slightly smaller than both the original and the robust standard errors. The changes were very small, for the most part less than 0.05. The p-values should stay roughly the same, either increasing or decreasing very slightly by tenths of a decimal, not enough to change a significant result to an insignificant or vice versa. The 95% CI is shown as well, with lower 0.025% and the upper 0.025% which is indicative of the p-values. These upper and lower bounds indicate the border of the middle 95% of distribution. Anything lower than the lower bound is in the bottom 0.025% of the distribution and anything higher than the upper bound is in the top 0.025% of the distribution. Together, these make up the 0.025 + 0.025 = 0.05 p-values. 
+
+
+###Logistic Regression Model
+```{r}
+library(tidyverse)
+library(lmtest)
+class_diag<-function(probs,truth){
+  tab<-table(factor(probs>.5,levels=c("FALSE","TRUE")),truth)
+  acc=sum(diag(tab))/sum(tab)
+  sens=tab[2,2]/colSums(tab)[2]
+  spec=tab[1,1]/colSums(tab)[1]
+  ppv=tab[2,2]/rowSums(tab)[2]
+  f1=2*(sens*ppv)/(sens+ppv)
+
+  if(is.numeric(truth)==FALSE & is.logical(truth)==FALSE){
+    truth<-as.numeric(truth)-1}
+  
+  #CALCULATE EXACT AUC
+  ord<-order(probs, decreasing=TRUE)
+  probs <- probs[ord]; truth <- truth[ord]
+  
+  TPR=cumsum(truth)/max(1,sum(truth)) 
+  FPR=cumsum(!truth)/max(1,sum(!truth))
+  
+  dup<-c(probs[-1]>=probs[-length(probs)], FALSE)
+  TPR<-c(0,TPR[!dup],1); FPR<-c(0,FPR[!dup],1)
+  
+  n <- length(TPR)
+  auc<- sum( ((TPR[-1]+TPR[-n])/2) * (FPR[-1]-FPR[-n]) )
+
+  data.frame(acc,sens,spec,ppv,f1,auc)
+}
+
+
+raptordata <- raptor %>% mutate(y=ifelse(war_win==TRUE,1,0))
+head(raptordata)
+
+fitrap <- glm(y~position+minutes_c, data=raptordata, family="binomial")
+coeftest(fitrap)
+exp(coef(fitrap))
+coef(fitrap) %>% exp %>% round(5) %>% data.frame
+
+prob <- predict(fitrap,type="response") 
+pred <- ifelse(prob>.5,1,0)
+table(predict=as.numeric(prob>.5),truth=raptordata$y) %>% addmargins
+class_diag(prob,raptordata$war_win)
+
+raptordata$logit<-predict(fitrap,type="link") #get predicted logit/log-odds for everyone
+
+raptordata %>% ggplot() + geom_density(aes(logit,color=war_win,fill=war_win), alpha=.4) + theme(legend.position=c(.85,.85)) + geom_vline(xintercept=0) + xlab("logit (log-odds)") + geom_rug(aes(logit,color=war_win))
+
+library(plotROC)
+ROCplot <- ggplot(raptordata)+geom_roc(aes(d=war_win,m=prob), n.cuts=0) 
+ROCplot
+calc_auc(ROCplot)
+```
+
+#####  For a basketball player who has plays average minutes, the predicted odds of being a player with a WAR of 3 or higher (being responsible for 3 additional wins above the expected for a replacement player) for a Center is 2.0536. The predicted odds of being a Power Forward with a 3-game WAR with average minutes played is 0.174 times the odds of a Center. The predicted odds of being a Point Guard with a 3-game WAR with average minutes played is 0.266 times the odds of a Center. The predicted odds of being a Small Forward with a 3-game WAR with average minutes played is 0.271 times the odds of a Center. The predicted odds of being a Shooting Guard with a 3-game WAR with average minutes played is 0.227 times the odds of a Center. Controlling for basketball position, for every one additional minute played, odds of being a player with a 3-game WAR (being responsible for 3 additional wins above the expected for the next best replacement player) increases by a factor of 1.003.
+#####  After a confusion matrix was made, the accuracy of the model was found to be 0.752. The sensitivity of the model, also known as the true positive rate, was found to be 0.640. The specificity of the model, also known as the true negative rate, was found to be 0.827. The precision of the model, also known as the positive predictive value was found to be 0.711. The AUC of the model, or the area under the curve, was found to be 0.816, which is classified as a "good" AUC. 
+
+
+###Logistic Regression Model Cont.
+```{r}
+fitrap2 <- glm(y~offensiveraptor+defensiveraptor+totalraptor+team, data = raptordata, family = "binomial")
+coeftest(fitrap2)
+exp(coef(fitrap2))
+coef(fitrap2) %>% exp %>% data.frame
+
+prob2 <- predict(fitrap2,type="response") 
+table(predict=as.numeric(prob2>.5),truth=raptordata$y) %>% addmargins
+class_diag(prob2,raptordata$y)
+```
+#####  After running the logistic regression on the remaining variables (offensiveraptor, defensiveraptor, totalraptor, and NBA team), in-sample classification diagnostics were computed. The accuracy of the model was 0.968, the sensitivity of the model was 0.960, the specificity of the model was 0.973, the precision of the model was 0.96, and the AUC (area under the curve) of the model was 0.993. All of these were high values, indicating that the model predicts whether a player has a 3-win WAR value (1 = has a WAR value greater than 3, 0 = has a WAR value less 3 or less) very well within the sample. The high accuracy of 0.968 indicates that within the sample, the model correctly predicts true positives and true negatives at a high rate. This means that the model correctly predicts whether the player has a winning WAR value from the other RAPTOR and team variables. The high sensitivity, or true positive rate, of 0.96, indicates that the model predicts a very high proportion of positives correctly. The high specificity, or true negative rate, of 0.973, indicates that the model predicts a very high proportion of negatives correctly. The high precision, or positive predictive value, of 0.96, indicates that there is a high fraction of positive predictions that are truly positive. The AUC, or area under the curve is extremely high, indicating that it predicts the data within the sample at an extremely high rate.
+
+```{r}
+set.seed(1234)
+k=10
+data<-raptordata[sample(nrow(raptordata)),] 
+folds<-cut(seq(1:nrow(raptordata)),breaks=k,labels=F) 
+diags<-NULL
+for(i in 1:k){
+  train<-data[folds!=i,]    
+  test<-data[folds==i,]     
+  truth<-test$y 
+  fitrap2<-glm(y~offensiveraptor+defensiveraptor+totalraptor+team, data = train, family = "binomial")
+  prob<-predict(fitrap2,newdata = test,type="response") 
+  diags<-rbind(diags,class_diag(prob,truth))
+}
+
+summarize_all(diags,mean)
+```
+#####  A 10-fold cross-validation was performed to determine the logistic regression model's ability to predict WAR classification out of sample. As expected, all of the classification diagnostics values decreased, including the AUC decreasing from 0.993 to 0.940. The 0.940 AUC is still very high and considered "great", but does reveal overfitting of the model when applied to out-of-sample predictions. The rest of the out-of-sample predictions gave an accuracy of 0.856, a sensitivity of 0.809, a specificity of 0.890, and a precision of 0.822.
+
+```{r}
+library(glmnet)
+library(dplyr)
+set.seed(1234)
+
+rap_preds <- model.matrix(y~offensiveraptor+defensiveraptor+totalraptor+team, data = raptordata)[,-1]
+rap_preds <- scale(rap_preds)
+y <- as.matrix(raptordata$y)
+cv <- cv.glmnet(rap_preds, y, family="binomial")
+lasso_fit <- glmnet(rap_preds, y, family="binomial", lambda = cv$lambda.1se)
+coef(lasso_fit)
+
+prob3 <- predict(lasso_fit, rap_preds, type="response")
+class_diag(prob3,raptordata$y)
+
+table(predict=as.numeric(prob3>.5),truth=raptordata$y) %>% addmargins
+```
+#####  After performing LASSO (Least Absolute Shrinkage and Selection Operator) regularization with the simplest lambda (lamda.1se) that yields the best accuracy, the most important and predictive variables were chosen. These turned out to be offensiveraptor, totalraptor, teamGrizzlies, and teamRaptors. This indicates that these four variables are the most predictive of a player's relative WAR value (above or below the threshold of 3 wins). Additionally, new classification diagnostics were calculated. The accuracy of the LASSO model was 0.92, the sensitivity was 0.89, the specificity was 0.94, the precision was 0.908, and the AUC was 0.979.
+
+```{r}
+rap_preds2 <- model.matrix(y~offensiveraptor+defensiveraptor+totalraptor+team, data = raptordata)[,-1]
+raptor1 <- data.frame(rap_preds2, y = raptordata$y)
+
+set.seed(1234)
+k=10
+data<-raptor1[sample(nrow(raptor1)),] 
+folds<-cut(seq(1:nrow(raptor1)),breaks=k,labels=F) 
+diags<-NULL
+for(i in 1:k){
+  train<-data[folds!=i,]    
+  test<-data[folds==i,]     
+  truth<-test$y 
+  fitrap3<-glm(y~offensiveraptor+totalraptor+teamGrizzlies+teamRaptors, data = train, family = "binomial")
+  prob <- predict(fitrap3, newdata = test, type="response")
+  diags<-rbind(diags,class_diag(prob,truth))
+}
+
+summarize_all(diags,mean)
+```
+##### Using only the 4 variables that LASSO identified, another 10-fold cross-validation was ran on the model. This essentially tests the out-of-sample predictive value of the logistic regression model when only considering the "most important" predictors of offensiveraptor, totalraptor, teamGrizzlies, and teamRaptors. The AUC was calculated to be 0.972, which is greater than the AUC of the original out-of-sample CV (with all the variables considered) which was 0.94. The AUC of the LASSO out-of-sample model was less than the AUC of the in-sample predictive model, which was 0.9933, and the LASSO in-sample model, which was 0.979.
+

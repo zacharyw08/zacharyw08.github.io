@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Zachary Wong" />
+    <meta name="description" content="Describe your website">
+    <link rel="shortcut icon" type="image/x-icon" href="../img/favicon.ico">
+    <title>SDS 348 Project 2: Modeling, Testing, and Predicting NBA RAPTOR Scores</title>
+    <meta name="generator" content="Hugo 0.79.0" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="../css/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+  </head>
+
+  <body>
+    <div id="wrap">
+
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="../"><i class="fa fa-home"></i></a>
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <div class="navbar-collapse collapse" id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="../post/">BLOG</a></li>
+        
+        <li><a href="../projects/">PROJECTS</a></li>
+        
+        <li><a href="../resume/">RESUME</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      
+      <div class="container">
+        <div class="blog-post">
+          <h3>
+            <strong><a href="../project2/">SDS 348 Project 2: Modeling, Testing, and Predicting NBA RAPTOR Scores</a></strong>
+          </h3>
+        </div>
+        <div class="blog-title">
+          <h4>
+          January 1, 0001
+            &nbsp;&nbsp;
+            
+          </h4>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              
+
+
+<div id="by-zachary-wong-zpw97" class="section level4">
+<h4>By: Zachary Wong zpw97</h4>
+</div>
+<div id="introduction" class="section level3">
+<h3>Introduction</h3>
+<div id="the-dataset-that-i-chose-for-this-project-relates-to-the-efficiency-statistics-of-nba-players.-this-dataset-is-one-of-the-datasets-that-i-used-for-project-1-which-i-chose-because-i-am-a-huge-basketball-fan-and-enjoy-researching-how-players-contribute-to-the-team-through-their-statistics.-the-specific-dataset-came-from-the-five-thirty-eight-website-which-provides-many-datasets-related-to-sports-politics-economics-and-more.-the-dataset-examines-individual-player-efficiency-of-nba-basketball-players-by-using-a-metric-called-raptor-which-is-measured-in-basketball-points.-this-metric-was-created-by-five-thirty-eight-and-is-based-on-the-amount-of-points-the-player-is-directly-or-indirectly-responsible-for-while-in-the-game-on-both-offense-and-defense.-the-raptor-dataset-has-250-observations-and-contains-many-variables-but-the-following-eight-will-be-selectively-used-in-this-project-player-team-position-minutes-played-offensive-raptor-score-defensive-raptor-score-total-raptor-score-and-war-wins-above-replacement." class="section level5">
+<h5>The dataset that I chose for this project relates to the efficiency statistics of NBA players. This dataset is one of the datasets that I used for project 1, which I chose because I am a huge basketball fan and enjoy researching how players contribute to the team through their statistics. The specific dataset came from the Five Thirty Eight website, which provides many datasets related to sports, politics, economics, and more. The dataset examines individual player efficiency of NBA basketball players by using a metric called RAPTOR, which is measured in basketball points. This metric was created by Five Thirty Eight and is based on the amount of points the player is directly or indirectly responsible for while in the game on both offense and defense. The RAPTOR dataset has 250 observations and contains many variables, but the following eight will be selectively used in this project: player, team, position, minutes played, offensive RAPTOR score, defensive RAPTOR score, total RAPTOR score, and WAR (wins above replacement).</h5>
+</div>
+<div id="the-observations-are-the-names-of-nba-players-who-have-played-over-1025-minutes-this-past-regular-and-postseason.-the-cutoff-of-1025-minutes-was-enforced-to-only-use-a-manageable-portion-of-the-hundreds-of-nba-players-in-the-league.-the-team-variable-is-categorical-and-classifies-the-nba-team-that-the-player-played-on-during-this-past-2019-2020-season.-the-position-variable-is-categorical-and-classifies-the-players-primary-position-which-could-be-one-of-5-categories-point-guard-shooting-guard-small-forward-power-forward-and-center.-the-minutes-played-variable-is-numeric-and-gives-the-total-number-of-minutes-the-player-played-during-the-season.-the-offensive-raptor-and-defensive-raptor-scores-are-measured-in-basketball-points-and-essentially-give-the-number-of-points-that-the-player-accounted-for.-in-terms-of-offensive-raptor-the-player-could-account-for-points-by-scoring-or-assisting.-in-terms-of-defensive-raptor-the-player-could-account-for-points-by-preventing-the-other-team-from-scoring.-these-two-raptor-scores-are-additive-and-combine-into-the-numeric-total-raptor-variable-which-is-an-overall-measurement-of-the-players-contribution-in-terms-of-basketball-points-during-the-game.-war-is-another-numeric-variable-which-is-measured-in-wins-and-is-essentially-the-number-of-additional-wins-that-the-team-has-gained-above-the-expected-amount-if-they-were-substituted-with-a-replacement-player.-therefore-a-war-value-of-10-indicates-that-the-specific-player-has-accounted-for-10-additional-wins-for-his-team-none-of-which-would-have-occurred-if-his-replacement-was-playing." class="section level5">
+<h5>The observations are the names of NBA players who have played over 1,025 minutes this past regular and postseason. The cutoff of 1,025 minutes was enforced to only use a manageable portion of the hundreds of NBA players in the league. The team variable is categorical and classifies the NBA team that the player played on during this past 2019-2020 season. The position variable is categorical and classifies the player's primary position, which could be one of 5 categories: point guard, shooting guard, small forward, power forward, and center. The minutes played variable is numeric and gives the total number of minutes the player played during the season. The offensive RAPTOR and defensive RAPTOR scores are measured in basketball points and essentially give the number of points that the player accounted for. In terms of offensive RAPTOR, the player could account for points by scoring or assisting. In terms of defensive RAPTOR, the player could account for points by preventing the other team from scoring. These two RAPTOR scores are additive and combine into the numeric total raptor variable, which is an overall measurement of the player's contribution in terms of basketball points during the game. WAR is another numeric variable, which is measured in &quot;wins&quot; and is essentially the number of additional wins that the team has gained above the expected amount if they were substituted with a replacement player. Therefore, a WAR value of 10 indicates that the specific player has accounted for 10 additional wins for his team, none of which would have occurred if his replacement was playing.</h5>
+<pre class="r"><code>library(readr)
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+raptor &lt;- read_csv(&quot;raptordata_positions.csv&quot;)
+raptor &lt;- raptor %&gt;% select(-1,-6,-7,-8,-9,-10,-11)
+raptor &lt;- raptor %&gt;% mutate(war_win = case_when(war &gt; 3 ~ TRUE, war &lt;= 3 ~ FALSE))</code></pre>
+<pre class="r"><code>#MANOVA Assumptions
+library(rstatix)
+group &lt;- raptor$position 
+DVs &lt;- raptor %&gt;% select(offensiveraptor,defensiveraptor,totalraptor,minutes,war)
+
+sapply(split(DVs,group), mshapiro_test)</code></pre>
+<pre><code>## C PF PG SF SG
+## statistic 0.7726174 0.5836122 0.8474224 0.6106893
+0.5788483
+## p.value 1.908631e-06 5.097607e-11 9.403295e-06
+2.174422e-10 3.350227e-11</code></pre>
+<pre class="r"><code># Multivariate normality assumption is not met for any group!
+box_m(DVs, group)</code></pre>
+<pre><code>## # A tibble: 1 x 4
+## statistic p.value parameter method
+## &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;
+## 1 84.8 0.0193 60 Box&#39;s M-test for Homogeneity of
+Covariance Matrices</code></pre>
+<pre class="r"><code># Homogeneity of covariance matrices assumption is not met!
+
+
+#Actual MANOVA test
+man1 &lt;- manova(cbind(offensiveraptor,defensiveraptor,totalraptor,minutes,war)~position, data=raptor)
+summary(man1)</code></pre>
+<pre><code>## Df Pillai approx F num Df den Df Pr(&gt;F)
+## position 4 0.26426 3.452 20 976 4.962e-07 ***
+## Residuals 245
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1</code></pre>
+<pre class="r"><code>summary.aov(man1)</code></pre>
+<pre><code>## Response offensiveraptor :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## position 4 103.4 25.8493 5.9041 0.0001496 ***
+## Residuals 245 1072.7 4.3782
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Response defensiveraptor :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## position 4 143.26 35.815 11.539 1.342e-08 ***
+## Residuals 245 760.47 3.104
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Response totalraptor :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## position 4 56.41 14.1024 1.9496 0.1029
+## Residuals 245 1772.18 7.2334
+##
+## Response minutes :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## position 4 2141010 535253 2.3402 0.05574 .
+## Residuals 245 56036553 228721
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Response war :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## position 4 48.23 12.057 1.1361 0.3401
+## Residuals 245 2600.07 10.613</code></pre>
+<pre class="r"><code>raptor %&gt;% group_by(position) %&gt;% summarize(mean(offensiveraptor), mean(defensiveraptor))</code></pre>
+<pre><code>## # A tibble: 5 x 3
+## position `mean(offensiveraptor)` `mean(defensiveraptor)`
+## &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 C -0.43 1.64
+## 2 PF -0.475 0.147
+## 3 PG 1.12 -0.656
+## 4 SF 0.0490 0.120
+## 5 SG 0.780 -0.483</code></pre>
+<pre class="r"><code>pairwise.t.test(raptor$offensiveraptor, raptor$position, p.adj=&quot;none&quot;)</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  raptor$offensiveraptor and raptor$position 
+## 
+##    C       PF      PG      SF     
+## PF 0.91745 -       -       -      
+## PG 0.00049 0.00012 -       -      
+## SF 0.27946 0.20249 0.00963 -      
+## SG 0.00601 0.00215 0.39641 0.07497
+## 
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>pairwise.t.test(raptor$defensiveraptor, raptor$position, p.adj=&quot;none&quot;)</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  raptor$defensiveraptor and raptor$position 
+## 
+##    C       PF    PG    SF   
+## PF 6.8e-05 -     -     -    
+## PG 2.3e-09 0.020 -     -    
+## SF 5.8e-05 0.936 0.026 -    
+## SG 2.2e-08 0.065 0.615 0.081
+## 
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>raptor %&gt;% select(position, offensiveraptor, defensiveraptor) %&gt;% 
+  pivot_longer(-1,names_to=&#39;DV&#39;, values_to=&#39;measure&#39;) %&gt;% ggplot(aes(position,measure,fill=position)) + 
+  geom_bar(stat=&quot;summary&quot;)+geom_errorbar(stat=&quot;summary&quot;, width=.5) + facet_wrap(~DV, nrow=2) + 
+  coord_flip() + ylab(&quot;&quot;) + theme(legend.position = &quot;none&quot;)</code></pre>
+<p><img src="../Project2_NBA_files/figure-html/unnamed-chunk-2-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#Type I error occurence probability for 26 tests (1 MANOVA, 5 ANOVA, 20 t-tests)
+set.seed(348)
+Type1Error &lt;- replicate(5000,{
+  pvals &lt;- NULL
+   for(i in 1:26){
+    samp1 &lt;- rnorm(20,mean=0)
+    samp2 &lt;- rnorm(20,mean=0)
+    pvals[i] &lt;- t.test(samp1,samp2,var.eq=T)$p.val
+   }
+  sum(pvals&lt;.05)
+})
+mean(Type1Error&gt;0)</code></pre>
+<pre><code>## [1] 0.7436</code></pre>
+<pre class="r"><code>#Bonferroni Correction
+0.05/26</code></pre>
+<pre><code>## [1] 0.001923077</code></pre>
+</div>
+<div id="before-conducting-the-manova-the-assumptions-were-assessed.-these-assumptions-are-random-sampling-independent-observations-multivariate-normality-of-dependent-variables-homogeneity-of-within-group-covariance-matrices-linear-relationship-among-dependent-variables-no-extreme-univariate-or-multivariate-outliers-and-no-multicollinearity.-due-to-the-large-amount-of-assumptions-and-the-somewhat-organized-dataset-being-used-there-is-a-very-small-chance-that-all-of-these-assumptions-were-met.-while-the-samples-are-all-independent-observations-the-nba-players-were-not-chosen-at-random-but-rather-by-a-threshold-of-1025-minutes-played-in-the-2020-season.-additionally-the-shapiro-wilk-test-was-conducted-and-revealed-that-the-multivariate-normality-assumption-was-not-met-as-the-p-values-for-all-five-positions-were-less-than-0.05.-this-means-that-the-null-hypothesis-that-the-dependent-variables-are-normally-distributed-was-rejected.-due-to-the-fact-that-this-assumption-was-rejected-it-is-clear-that-the-assumptions-for-this-manova-are-not-met.-additionally-a-boxs-m-test-revealed-that-the-assumption-for-equivalent-covariance-matrices-was-not-met." class="section level5">
+<h5>Before conducting the MANOVA, the assumptions were assessed. These assumptions are random sampling, independent observations, multivariate normality of dependent variables, homogeneity of within-group covariance matrices, linear relationship among dependent variables, no extreme univariate or multivariate outliers, and no multicollinearity. Due to the large amount of assumptions and the somewhat organized dataset being used, there is a very small chance that all of these assumptions were met. While the samples are all independent observations, the NBA players were not chosen at random, but rather by a threshold of 1,025 minutes played in the 2020 season. Additionally, the Shapiro-Wilk Test was conducted and revealed that the multivariate normality assumption was not met, as the p-values for all five positions were less than 0.05. This means that the null hypothesis that the dependent variables are normally distributed was rejected. Due to the fact that this assumption was rejected, it is clear that the assumptions for this MANOVA are not met. Additionally, a Box's M Test revealed that the assumption for equivalent covariance matrices was not met.</h5>
+</div>
+<div id="the-manova-was-conducted-on-all-of-the-numeric-variables-in-an-attempt-to-see-if-there-was-a-significant-mean-difference-across-levels-of-the-categorical-variable-of-position.-the-manova-was-revealed-to-be-significant-with-a-p-value-of-4.96e-07.-due-to-the-fact-that-five-numeric-variables-were-included-in-the-manova-five-individual-univariate-anovas-had-to-be-conducted-to-determine-which-variables-were-actually-significant.-the-univariate-anovas-revealed-that-only-two-of-the-numeric-variables-had-significant-p-values-even-below-the-current-bonferronis-correction-p-value-of-0.056-0.0083.-the-offensive-raptor-variable-yielded-a-p-value-of-0.00015-and-the-defensive-raptor-variable-yielded-a-value-of-1.342e-08.-as-there-are-five-groups-within-the-categorical-variable-of-position-post-hoc-t-tests-were-then-conducted-to-determine-which-groups-differed-in-these-two-significant-numeric-variables.-for-offensive-raptor-the-positions-of-point-guard-and-power-forward-as-well-as-point-guard-and-center-differed-significantly-with-p-values-of-0.00012-and-0.00049-both-of-which-are-less-than-the-bonferronis-correction-p-value-of-0.001923-which-is-equal-to-0.0526.-for-defensive-raptor-the-center-position-significantly-differed-from-all-other-positions-with-p-values-of-6.8e-05-between-c-and-pf-2.3e-09-between-c-and-pg-5.8e-05-between-c-and-sf-and-2.2e-08-between-c-and-sg.-these-p-values-are-all-less-than-the-bonferronis-correction-p-value-of-0.001923-which-is-equal-to-0.0526." class="section level5">
+<h5>The MANOVA was conducted on all of the numeric variables in an attempt to see if there was a significant mean difference across levels of the categorical variable of position. The MANOVA was revealed to be significant, with a p-value of 4.96e-07. Due to the fact that five numeric variables were included in the MANOVA, five individual univariate ANOVAs had to be conducted to determine which variables were actually significant. The univariate ANOVAs revealed that only two of the numeric variables had significant p-values (even below the current Bonferroni's correction p-value of 0.05/6 = 0.0083). The offensive RAPTOR variable yielded a p-value of 0.00015 and the defensive RAPTOR variable yielded a value of 1.342e-08. As there are five groups within the categorical variable of position, post-hoc t-tests were then conducted to determine which groups differed in these two significant numeric variables. For offensive RAPTOR, the positions of point guard and power forward, as well as point guard and center differed significantly, with p-values of 0.00012 and 0.00049, both of which are less than the Bonferroni's correction p-value of 0.001923 (which is equal to 0.05/26). For defensive RAPTOR, the center position significantly differed from all other positions, with p-values of 6.8e-05 between C and PF, 2.3e-09 between C and PG, 5.8e-05 between C and SF, and 2.2e-08 between C and SG. These p-values are all less than the Bonferroni's correction p-value of 0.001923 (which is equal to 0.05/26).</h5>
+</div>
+<div id="due-to-the-fact-that-26-tests-were-performed-by-the-end-of-the-process-there-is-a-0.7436-proportion-that-there-is-at-least-one-type-i-error.-as-the-probability-that-there-was-a-type-i-error-increases-as-the-number-of-tests-increases-this-is-believable.-the-26-total-tests-were-1-manova-5-one-way-anovas-offensive-raptor-and-defensive-raptor-were-the-only-significant-results-and-20-t-tests-10-for-offensive-10-for-defensive.-the-bonferroni-correction-for-a-total-of-23-tests-is-0.0526-resulting-in-the-p-value-0.001923." class="section level5">
+<h5>Due to the fact that 26 tests were performed by the end of the process, there is a 0.7436 proportion that there is at least one type I error. As the probability that there was a type I error increases as the number of tests increases, this is believable. The 26 total tests were 1 MANOVA, 5 one-way ANOVAs (offensive RAPTOR and defensive RAPTOR were the only significant results), and 20 t-tests (10 for offensive, 10 for defensive). The Bonferroni correction for a total of 23 tests is 0.05/26, resulting in the p-value 0.001923.</h5>
+</div>
+</div>
+<div id="randomization-test" class="section level3">
+<h3>Randomization Test</h3>
+<pre class="r"><code>ggplot(raptor,aes(totalraptor,fill=position))+geom_histogram(bins=6.5)+
+  facet_wrap(~position,ncol=2)+theme(legend.position=&quot;none&quot;)</code></pre>
+<p><img src="../Project2_NBA_files/figure-html/unnamed-chunk-3-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>raptor %&gt;% group_by(position) %&gt;% summarize(mean(totalraptor))</code></pre>
+<pre><code>## # A tibble: 5 x 2
+##   position `mean(totalraptor)`
+##   &lt;chr&gt;                  &lt;dbl&gt;
+## 1 C                      1.22 
+## 2 PF                    -0.323
+## 3 PG                     0.467
+## 4 SF                     0.171
+## 5 SG                     0.294</code></pre>
+<pre class="r"><code>1.2175 - -0.3226415      #mean difference in totalraptor between C and PF is 1.5401</code></pre>
+<pre><code>## [1] 1.540142</code></pre>
+<pre class="r"><code>set.seed(1234)
+rand_dist&lt;-vector()
+for(i in 1:5000){
+new &lt;- data.frame(totalraptor=sample(raptor$totalraptor), position=raptor$position)
+rand_dist[i] &lt;- mean(new[new$position == &quot;C&quot;,]$totalraptor) - mean(new[new$position == &quot;PF&quot;,]$totalraptor)} 
+{hist(rand_dist, main = &quot;&quot;, ylab = &quot;&quot;); abline(v = c(-1.5401, 1.5401), col = &quot;red&quot;)}</code></pre>
+<p><img src="../Project2_NBA_files/figure-html/unnamed-chunk-3-2.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>mean(rand_dist &gt; 1.5401 | rand_dist &lt; -1.5401)</code></pre>
+<pre><code>## [1] 0.0068</code></pre>
+<pre class="r"><code>t.test(data=raptor,totalraptor~position==&quot;C&quot; | position ==&quot;PF&quot;)</code></pre>
+<pre><code>##
+## Welch Two Sample t-test
+##
+## data: totalraptor by position == &quot;C&quot; | position == &quot;PF&quot;
+## t = -0.080118, df = 196.4, p-value = 0.9362
+## alternative hypothesis: true difference in means is not
+equal to 0
+## 95 percent confidence interval:
+## -0.7254178 0.6687779
+## sample estimates:
+## mean in group FALSE mean in group TRUE
+## 0.3114650 0.3397849</code></pre>
+<div id="a-randomization-test-of-the-mean-difference-in-total-raptor-scores-between-nba-players-primarily-classified-as-centers-and-nba-players-primarily-classified-as-power-forwards-was-conducted-through-the-use-of-a-two-sample-t-test.-these-two-positions-were-used-for-the-mean-difference-statistic-because-they-were-found-to-have-the-two-most-different-mean-total-raptor-scores-amongst-the-five-basketball-positions.-the-null-hypothesis-h0-of-the-t-test-was-that-there-is-no-significant-difference-between-the-mean-total-raptor-score-of-nba-centers-and-the-mean-total-raptor-score-of-nba-power-forwards.-the-alternative-hypothesis-ha-of-the-t-test-was-that-there-is-a-significant-difference-between-the-mean-total-raptor-score-of-nba-centers-and-the-mean-total-raptor-score-of-nba-power-forwards." class="section level5">
+<h5>A randomization test of the mean difference in total RAPTOR scores between NBA players primarily classified as centers and NBA players primarily classified as power forwards was conducted through the use of a two-sample t-test. These two positions were used for the mean difference statistic because they were found to have the two most different mean total RAPTOR scores amongst the five basketball positions. The null hypothesis (H0) of the t-test was that there is no significant difference between the mean total RAPTOR score of NBA centers and the mean total RAPTOR score of NBA power forwards. The alternative hypothesis (HA) of the t-test was that there is a significant difference between the mean total RAPTOR score of NBA centers and the mean total RAPTOR score of NBA power forwards.</h5>
+</div>
+<div id="the-mean-difference-in-total-raptor-between-centers-and-power-forwards-is-1.5401-points.-a-randomization-test-with-5000-simulated-distributions-was-performed-to-determine-the-probability-of-getting-a-mean-difference-as-extreme-as-this-observed-difference-1.5401-if-there-is-truly-no-difference-between-centers-and-power-forwards-in-their-total-raptor-scores.-the-two-sample-t-test-resulted-in-a-p-value-of-0.9362.-the-calculated-two-tailed-p-value-found-by-determining-the-mean-of-the-values-greater-or-less-than-the-test-statistic-was-0.0068.-this-is-much-less-than-the-t-test-calculated-p-value-indicating-a-rejection-of-the-null-hypothesis-and-a-significant-difference-between-the-total-raptor-scores-of-centers-and-power-forwards." class="section level5">
+<h5>The mean difference in total RAPTOR between centers and power forwards is 1.5401 points. A randomization test with 5000 simulated distributions was performed to determine the probability of getting a mean difference as extreme as this observed difference (1.5401) if there is truly no difference between centers and power forwards in their total RAPTOR scores. The two-sample t-test resulted in a p-value of 0.9362. The calculated two-tailed p-value found by determining the mean of the values greater or less than the test statistic was 0.0068. This is much less than the t-test calculated p-value, indicating a rejection of the null hypothesis and a significant difference between the total RAPTOR scores of centers and power forwards.</h5>
+</div>
+</div>
+<div id="linear-regression-model" class="section level3">
+<h3>Linear Regression Model</h3>
+<pre class="r"><code>raptor$minutes_c &lt;- raptor$minutes - mean(raptor$minutes)
+fitraptor &lt;- lm(totalraptor ~ position * minutes_c, data=raptor)
+summary(fitraptor)</code></pre>
+<pre><code>##
+## Call:
+## lm(formula = totalraptor ~ position * minutes_c, data =
+raptor)
+##
+## Residuals:
+## Min 1Q Median 3Q Max
+## -6.9824 -1.6631 -0.0862 1.3224 8.1697
+##
+## Coefficients:
+## Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) 1.4339621 0.3970815 3.611 0.000371 ***
+## positionPF -1.5615281 0.5260036 -2.969 0.003294 **
+## positionPG -1.0555716 0.5230465 -2.018 0.044691 *
+## positionSF -1.4713725 0.5269527 -2.792 0.005656 **
+## positionSG -1.4421443 0.5222887 -2.761 0.006204 **
+## minutes_c 0.0016472 0.0006902 2.387 0.017781 *
+## positionPF:minutes_c 0.0001917 0.0010142 0.189 0.850249
+## positionPG:minutes_c 0.0008197 0.0010969 0.747 0.455621
+## positionSF:minutes_c 0.0011672 0.0009937 1.175 0.241308
+## positionSG:minutes_c 0.0014741 0.0009723 1.516 0.130826
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Residual standard error: 2.445 on 240 degrees of freedom
+## Multiple R-squared: 0.2154, Adjusted R-squared: 0.186
+## F-statistic: 7.321 on 9 and 240 DF, p-value: 2.042e-09</code></pre>
+<pre class="r"><code>library(interactions)
+raptor %&gt;% ggplot(aes(minutes_c,totalraptor,color=position)) + geom_point() + geom_smooth(method=&quot;lm&quot;, se=F) + ggtitle(&quot;Linear Regression of Minutes Played and Position on Total RAPTOR&quot;) + xlab(&quot;Minutes Played (mean-centered)&quot;) + ylab(&quot;Total RAPTOR Score (points)&quot;) + labs(color=&quot;Basketball \nPosition&quot;)</code></pre>
+<p><img src="../Project2_NBA_files/figure-html/unnamed-chunk-4-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#Assumptions for Linear Regression
+resids&lt;-fitraptor$residuals
+fitvals&lt;-fitraptor$fitted.values
+plot(fitvals,resids); abline(h=0, col=&#39;red&#39;)</code></pre>
+<p><img src="../Project2_NBA_files/figure-html/unnamed-chunk-4-2.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>par(mfrow=c(1,2)); hist(resids); qqnorm(resids); qqline(resids, col=&#39;red&#39;)</code></pre>
+<p><img src="../Project2_NBA_files/figure-html/unnamed-chunk-4-3.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>library(sandwich)
+library(lmtest)
+bptest(fitraptor)</code></pre>
+<pre><code>## 
+##  studentized Breusch-Pagan test
+## 
+## data:  fitraptor
+## BP = 7.1906, df = 9, p-value = 0.6173</code></pre>
+<pre class="r"><code>#Recomputation of results with Robust Standard Errors
+summary(fitraptor)</code></pre>
+<pre><code>##
+## Call:
+## lm(formula = totalraptor ~ position * minutes_c, data =
+raptor)
+##
+## Residuals:
+## Min 1Q Median 3Q Max
+## -6.9824 -1.6631 -0.0862 1.3224 8.1697
+##
+## Coefficients:
+## Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) 1.4339621 0.3970815 3.611 0.000371 ***
+## positionPF -1.5615281 0.5260036 -2.969 0.003294 **
+## positionPG -1.0555716 0.5230465 -2.018 0.044691 *
+## positionSF -1.4713725 0.5269527 -2.792 0.005656 **
+## positionSG -1.4421443 0.5222887 -2.761 0.006204 **
+## minutes_c 0.0016472 0.0006902 2.387 0.017781 *
+## positionPF:minutes_c 0.0001917 0.0010142 0.189 0.850249
+## positionPG:minutes_c 0.0008197 0.0010969 0.747 0.455621
+## positionSF:minutes_c 0.0011672 0.0009937 1.175 0.241308
+## positionSG:minutes_c 0.0014741 0.0009723 1.516 0.130826
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Residual standard error: 2.445 on 240 degrees of freedom
+## Multiple R-squared: 0.2154, Adjusted R-squared: 0.186
+## F-statistic: 7.321 on 9 and 240 DF, p-value: 2.042e-09</code></pre>
+<pre class="r"><code>coeftest(fitraptor, vcov = vcovHC(fitraptor))</code></pre>
+<pre><code>##
+## t test of coefficients:
+##
+## Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) 1.43396209 0.36228344 3.9581 9.955e-05 ***
+## positionPF -1.56152808 0.55035794 -2.8373 0.004939 **
+## positionPG -1.05557161 0.51151278 -2.0636 0.040128 *
+## positionSF -1.47137248 0.48667272 -3.0233 0.002771 **
+## positionSG -1.44214428 0.48962417 -2.9454 0.003542 **
+## minutes_c 0.00164716 0.00070524 2.3356 0.020336 *
+## positionPF:minutes_c 0.00019169 0.00125572 0.1527
+0.878799
+## positionPG:minutes_c 0.00081970 0.00117887 0.6953
+0.487522
+## positionSF:minutes_c 0.00116724 0.00111212 1.0496
+0.294978
+## positionSG:minutes_c 0.00147410 0.00109802 1.3425
+0.180697
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1</code></pre>
+<div id="after-conducting-the-linear-regression-many-coefficients-were-generated.-the-intercept-gives-a-coefficient-of-1.434-indicating-that-the-predicted-total-raptor-for-a-center-with-average-minutes-played-is-1.434-points.-controlling-for-minutes-played-total-raptor-for-players-who-are-power-forwards-pf-is-on-average-1.562-points-less-than-players-who-are-centers-t--2.969-df-240-p-0.0033.-controlling-for-minutes-played-total-raptor-for-players-who-are-point-guards-pg-is-on-average-1.056-points-less-than-players-who-are-centers-t--2.018-df-240-p-0.0447.-controlling-for-minutes-played-total-raptor-for-players-who-are-small-forwards-is-on-average-1.471-points-less-than-players-who-are-centers-t--2.792-df-240-p-0.0057.-controlling-for-minutes-played-total-raptor-for-players-who-are-shooting-guards-is-on-average-1.442-points-less-than-players-who-are-centers-t--2.761-df-240-p-0.0062.-controlling-for-position-nba-players-raptor-scores-show-an-average-increase-of-0.00165-points-for-every-minute-increase-in-minutes-played-t-2.387-df-240-p-0.0178.-the-slope-for-mean-centered-minutes-played-on-total-raptor-is-0.000192-greater-for-power-forwards-compared-to-centers-t-0.189-df-240-p-0.8502.-the-slope-for-mean-centered-minutes-played-on-total-raptor-is-0.000820-greater-for-point-guards-compared-to-centers-t-0.747-df-240-p-0.4556.-the-slope-for-mean-centered-minutes-played-on-total-raptor-is-0.001167-greater-for-small-forwards-compared-to-centers-t-1.175-df-240-p-0.2413.-the-slope-for-mean-centered-minutes-played-on-total-raptor-is-0.001474-greater-for-shooting-guards-compared-to-centers-t-1.516-df-240-p-0.1308." class="section level5">
+<h5>After conducting the linear regression, many coefficients were generated. The intercept gives a coefficient of 1.434, indicating that the predicted total RAPTOR for a Center with average minutes played is 1.434 points. Controlling for minutes played, total RAPTOR for players who are power forwards (PF) is on average 1.562 points less than players who are centers (t = -2.969, df = 240, p = 0.0033). Controlling for minutes played, total RAPTOR for players who are point guards (PG) is on average 1.056 points less than players who are centers (t = -2.018, df = 240, p = 0.0447). Controlling for minutes played, total RAPTOR for players who are small forwards is on average 1.471 points less than players who are centers (t = -2.792, df = 240, p = 0.0057). Controlling for minutes played, total RAPTOR for players who are shooting guards is on average 1.442 points less than players who are centers (t = -2.761, df = 240, p = 0.0062). Controlling for position, NBA players' RAPTOR scores show an average increase of 0.00165 points for every minute increase in minutes played (t = 2.387, df = 240, p = 0.0178). The slope for mean-centered minutes played on total RAPTOR is 0.000192 greater for power forwards compared to centers (t = 0.189, df = 240, p = 0.8502). The slope for mean-centered minutes played on total RAPTOR is 0.000820 greater for point guards compared to centers (t = 0.747, df = 240, p = 0.4556). The slope for mean-centered minutes played on total RAPTOR is 0.001167 greater for small forwards compared to centers (t = 1.175, df = 240, p = 0.2413). The slope for mean-centered minutes played on total RAPTOR is 0.001474 greater for shooting guards compared to centers (t = 1.516, df = 240, p = 0.1308).</h5>
+</div>
+<div id="the-assumptions-of-linear-regression-are-independent-observations-random-sampling-a-linear-relationship-between-predictor-and-response-variables-normally-distributed-residuals-and-homoskedasticity-or-equal-variance-of-pointsresiduals-along-regression-line.-while-each-nba-player-was-an-independent-observation-technically-the-dataset-was-not-randomly-sampled-from-the-entire-nba-population.-for-the-purposes-of-this-project-however-i-believe-it-can-be-considered-random-sampling-just-from-those-players-who-played-significant-minutes.-the-more-statistial-assumptions-are-all-met-however-shown-by-an-equal-distribution-of-points-on-the-scatterplot-linearity-assumption-a-normal-distribution-on-the-histogram-of-residuals-normality-assumption-and-a-non-significant-p-value-in-the-breusch-pagan-test-indicating-that-the-test-failed-to-reject-the-null-hypothesis-of-homoskedasticity.-even-though-all-assumptions-were-technically-met-for-the-linear-regression-the-regression-results-were-recomputed-with-robust-standard-errors.-the-standard-errors-remained-nearly-the-same-values-increasing-or-decreasing-by-less-than-0.5-because-the-assumption-for-homoskedasticity-was-previously-met.-if-the-data-was-not-homoskedastic-breusch-pagan-null-hypothesis-was-rejected-to-begin-with-the-standard-errors-would-have-increased-while-holding-the-estimates-and-p-values-roughly-the-same.-in-this-case-robust-standard-errors-would-have-allowed-the-model-to-meet-the-assumption-of-homoskedasticity." class="section level5">
+<h5>The assumptions of linear regression are independent observations, random sampling, a linear relationship between predictor and response variables, normally distributed residuals, and homoskedasticity, or equal variance of points/residuals along regression line. While each NBA player was an independent observation, technically the dataset was not randomly sampled from the entire NBA population. For the purposes of this project, however I believe it can be considered random sampling (just from those players who played significant minutes). The more statistial assumptions are all met however, shown by an equal distribution of points on the scatterplot (linearity assumption), a normal distribution on the histogram of residuals (normality assumption), and a non-significant p-value in the Breusch-Pagan test, indicating that the test failed to reject the null hypothesis of homoskedasticity. Even though all assumptions were technically met for the linear regression, the regression results were recomputed with robust standard errors. The standard errors remained nearly the same values, increasing or decreasing by less than 0.5, because the assumption for homoskedasticity was previously met. If the data was not homoskedastic (Breusch-Pagan null hypothesis was rejected) to begin with, the standard errors would have increased while holding the estimates and p-values roughly the same. In this case, robust standard errors would have allowed the model to meet the assumption of homoskedasticity.</h5>
+</div>
+<div id="this-model-explains-21.54-.2154-proportion-of-the-variation-in-the-outcome-as-shown-by-the-multiple-r-squared-value-which-assumes-no-chance-association.-if-we-account-for-chance-association-between-mean-centered-minutes-and-position-the-adjusted-r-squared-value-says-that-the-model-explains-18.6-0.186-proportion-of-the-variation-in-the-outcome." class="section level5">
+<h5>This model explains 21.54% (.2154 proportion) of the variation in the outcome, as shown by the multiple R-squared value which assumes no chance association. If we account for chance association between mean-centered minutes and position, the adjusted R-squared value says that the model explains 18.6% (0.186 proportion) of the variation in the outcome.</h5>
+</div>
+</div>
+<div id="linear-regression-model-pt.-2" class="section level3">
+<h3>Linear Regression Model Pt. 2</h3>
+<pre class="r"><code>fitraptor &lt;- lm(totalraptor ~ position * minutes_c, data=raptor)
+summary(fitraptor)</code></pre>
+<pre><code>##
+## Call:
+## lm(formula = totalraptor ~ position * minutes_c, data =
+raptor)
+##
+## Residuals:
+## Min 1Q Median 3Q Max
+## -6.9824 -1.6631 -0.0862 1.3224 8.1697
+##
+## Coefficients:
+## Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) 1.4339621 0.3970815 3.611 0.000371 ***
+## positionPF -1.5615281 0.5260036 -2.969 0.003294 **
+## positionPG -1.0555716 0.5230465 -2.018 0.044691 *
+## positionSF -1.4713725 0.5269527 -2.792 0.005656 **
+## positionSG -1.4421443 0.5222887 -2.761 0.006204 **
+## minutes_c 0.0016472 0.0006902 2.387 0.017781 *
+## positionPF:minutes_c 0.0001917 0.0010142 0.189 0.850249
+## positionPG:minutes_c 0.0008197 0.0010969 0.747 0.455621
+## positionSF:minutes_c 0.0011672 0.0009937 1.175 0.241308
+## positionSG:minutes_c 0.0014741 0.0009723 1.516 0.130826
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Residual standard error: 2.445 on 240 degrees of freedom
+## Multiple R-squared: 0.2154, Adjusted R-squared: 0.186
+## F-statistic: 7.321 on 9 and 240 DF, p-value: 2.042e-09</code></pre>
+<pre class="r"><code>#Recomputation of results with Bootstrapped Standard Errors - resampling residuals
+fit1 &lt;- lm(totalraptor ~ position * minutes_c, data = raptor)
+resids1 &lt;- fit1$residuals
+fitted1 &lt;- fit1$fitted.values
+   
+resid_resamp &lt;- replicate(500,{
+  new_resids &lt;- sample(resids1,replace=TRUE)
+  raptor$new_y &lt;- fitted1 + new_resids
+  fit1 &lt;- lm(new_y ~ position * minutes_c, data = raptor)
+  coef(fit1)
+}) 
+resid_resamp %&gt;% t %&gt;% as.data.frame %&gt;% summarize_all(sd)</code></pre>
+<pre><code>## (Intercept) positionPF positionPG positionSF positionSG
+minutes_c positionPF:minutes_c
+## 1 0.3649175 0.4830274 0.4826179 0.492442 0.4772472
+0.0006522599 0.001004325
+## positionPG:minutes_c positionSF:minutes_c
+positionSG:minutes_c
+## 1 0.001064845 0.0009439956 0.0009359066</code></pre>
+<pre class="r"><code>resid_resamp %&gt;% t %&gt;% as.data.frame %&gt;% pivot_longer(1:10) %&gt;% group_by(name) %&gt;% summarize(lower=quantile(value,.025), upper=quantile(value,.975))</code></pre>
+<pre><code>## # A tibble: 10 x 3
+##    name                     lower    upper
+##    &lt;chr&gt;                    &lt;dbl&gt;    &lt;dbl&gt;
+##  1 (Intercept)           0.640     2.12   
+##  2 minutes_c             0.000357  0.00294
+##  3 positionPF           -2.48     -0.543  
+##  4 positionPF:minutes_c -0.00178   0.00213
+##  5 positionPG           -1.94     -0.0956 
+##  6 positionPG:minutes_c -0.00120   0.00289
+##  7 positionSF           -2.35     -0.378  
+##  8 positionSF:minutes_c -0.000737  0.00290
+##  9 positionSG           -2.35     -0.544  
+## 10 positionSG:minutes_c -0.000286  0.00336</code></pre>
+<div id="after-computing-bootstrapped-standard-errors-by-resampling-residuals-the-standard-errors-of-residuals-were-slightly-smaller-than-both-the-original-and-the-robust-standard-errors.-the-changes-were-very-small-for-the-most-part-less-than-0.05.-the-p-values-should-stay-roughly-the-same-either-increasing-or-decreasing-very-slightly-by-tenths-of-a-decimal-not-enough-to-change-a-significant-result-to-an-insignificant-or-vice-versa.-the-95-ci-is-shown-as-well-with-lower-0.025-and-the-upper-0.025-which-is-indicative-of-the-p-values.-these-upper-and-lower-bounds-indicate-the-border-of-the-middle-95-of-distribution.-anything-lower-than-the-lower-bound-is-in-the-bottom-0.025-of-the-distribution-and-anything-higher-than-the-upper-bound-is-in-the-top-0.025-of-the-distribution.-together-these-make-up-the-0.025-0.025-0.05-p-values." class="section level5">
+<h5>After computing bootstrapped standard errors, by resampling residuals, the standard errors of residuals were slightly smaller than both the original and the robust standard errors. The changes were very small, for the most part less than 0.05. The p-values should stay roughly the same, either increasing or decreasing very slightly by tenths of a decimal, not enough to change a significant result to an insignificant or vice versa. The 95% CI is shown as well, with lower 0.025% and the upper 0.025% which is indicative of the p-values. These upper and lower bounds indicate the border of the middle 95% of distribution. Anything lower than the lower bound is in the bottom 0.025% of the distribution and anything higher than the upper bound is in the top 0.025% of the distribution. Together, these make up the 0.025 + 0.025 = 0.05 p-values.</h5>
+</div>
+</div>
+<div id="logistic-regression-model" class="section level3">
+<h3>Logistic Regression Model</h3>
+<pre class="r"><code>library(tidyverse)
+library(lmtest)
+class_diag&lt;-function(probs,truth){
+  tab&lt;-table(factor(probs&gt;.5,levels=c(&quot;FALSE&quot;,&quot;TRUE&quot;)),truth)
+  acc=sum(diag(tab))/sum(tab)
+  sens=tab[2,2]/colSums(tab)[2]
+  spec=tab[1,1]/colSums(tab)[1]
+  ppv=tab[2,2]/rowSums(tab)[2]
+  f1=2*(sens*ppv)/(sens+ppv)
+
+  if(is.numeric(truth)==FALSE &amp; is.logical(truth)==FALSE){
+    truth&lt;-as.numeric(truth)-1}
+  
+  #CALCULATE EXACT AUC
+  ord&lt;-order(probs, decreasing=TRUE)
+  probs &lt;- probs[ord]; truth &lt;- truth[ord]
+  
+  TPR=cumsum(truth)/max(1,sum(truth)) 
+  FPR=cumsum(!truth)/max(1,sum(!truth))
+  
+  dup&lt;-c(probs[-1]&gt;=probs[-length(probs)], FALSE)
+  TPR&lt;-c(0,TPR[!dup],1); FPR&lt;-c(0,FPR[!dup],1)
+  
+  n &lt;- length(TPR)
+  auc&lt;- sum( ((TPR[-1]+TPR[-n])/2) * (FPR[-1]-FPR[-n]) )
+
+  data.frame(acc,sens,spec,ppv,f1,auc)
+}
+
+
+raptordata &lt;- raptor %&gt;% mutate(y=ifelse(war_win==TRUE,1,0))
+head(raptordata)</code></pre>
+<pre><code>## # A tibble: 6 x 11
+## player team position minutes offensiveraptor
+defensiveraptor totalraptor war war_win minutes_c
+## &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;lgl&gt;
+&lt;dbl&gt;
+## 1 James… Rock… SG 2931 8.5 2 10.5 19.8 TRUE 1149.
+## 2 Kawhi… Clip… SF 2359 6.4 3.3 9.6 14.9 TRUE 577.
+## 3 Giann… Bucks PF 2194 5.3 3.4 8.8 13.1 TRUE 412.
+## 4 LeBro… Lake… SF 3078 6.5 1.3 7.8 16.8 TRUE 1296.
+## 5 Antho… Lake… PF 2900 3.1 4.3 7.4 15.5 TRUE 1118.
+## 6 Karl-… Timb… C 1187 5.8 0.9 6.7 5.8 TRUE -595.
+## # … with 1 more variable: y &lt;dbl&gt;</code></pre>
+<pre class="r"><code>fitrap &lt;- glm(y~position+minutes_c, data=raptordata, family=&quot;binomial&quot;)
+coeftest(fitrap)</code></pre>
+<pre><code>##
+## z test of coefficients:
+##
+## Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept) 0.71958411 0.39992070 1.7993 0.071969 .
+## positionPF -1.74892809 0.55063959 -3.1762 0.001492 **
+## positionPG -1.32422555 0.52525745 -2.5211 0.011699 *
+## positionSF -1.30507939 0.53630446 -2.4335 0.014955 *
+## positionSG -1.48165383 0.53656239 -2.7614 0.005756 **
+## minutes_c 0.00299895 0.00041193 7.2802 3.333e-13 ***
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1</code></pre>
+<pre class="r"><code>exp(coef(fitrap))</code></pre>
+<pre><code>## (Intercept) positionPF positionPG positionSF positionSG
+minutes_c
+## 2.0535790 0.1739603 0.2660089 0.2711510 0.2272615
+1.0030035</code></pre>
+<pre class="r"><code>coef(fitrap) %&gt;% exp %&gt;% round(5) %&gt;% data.frame</code></pre>
+<pre><code>##                   .
+## (Intercept) 2.05358
+## positionPF  0.17396
+## positionPG  0.26601
+## positionSF  0.27115
+## positionSG  0.22726
+## minutes_c   1.00300</code></pre>
+<pre class="r"><code>prob &lt;- predict(fitrap,type=&quot;response&quot;) 
+pred &lt;- ifelse(prob&gt;.5,1,0)
+table(predict=as.numeric(prob&gt;.5),truth=raptordata$y) %&gt;% addmargins</code></pre>
+<pre><code>##        truth
+## predict   0   1 Sum
+##     0   124  36 160
+##     1    26  64  90
+##     Sum 150 100 250</code></pre>
+<pre class="r"><code>class_diag(prob,raptordata$war_win)</code></pre>
+<pre><code>##        acc sens      spec       ppv        f1       auc
+## TRUE 0.752 0.64 0.8266667 0.7111111 0.6736842 0.8164667</code></pre>
+<pre class="r"><code>raptordata$logit&lt;-predict(fitrap,type=&quot;link&quot;) #get predicted logit/log-odds for everyone
+
+raptordata %&gt;% ggplot() + geom_density(aes(logit,color=war_win,fill=war_win), alpha=.4) + theme(legend.position=c(.85,.85)) + geom_vline(xintercept=0) + xlab(&quot;logit (log-odds)&quot;) + geom_rug(aes(logit,color=war_win))</code></pre>
+<p><img src="../Project2_NBA_files/figure-html/unnamed-chunk-6-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>library(plotROC)
+ROCplot &lt;- ggplot(raptordata)+geom_roc(aes(d=war_win,m=prob), n.cuts=0) 
+ROCplot</code></pre>
+<p><img src="../Project2_NBA_files/figure-html/unnamed-chunk-6-2.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>calc_auc(ROCplot)</code></pre>
+<pre><code>##   PANEL group       AUC
+## 1     1    -1 0.8164667</code></pre>
+<div id="for-a-basketball-player-who-has-plays-average-minutes-the-predicted-odds-of-being-a-player-with-a-war-of-3-or-higher-being-responsible-for-3-additional-wins-above-the-expected-for-a-replacement-player-for-a-center-is-2.0536.-the-predicted-odds-of-being-a-power-forward-with-a-3-game-war-with-average-minutes-played-is-0.174-times-the-odds-of-a-center.-the-predicted-odds-of-being-a-point-guard-with-a-3-game-war-with-average-minutes-played-is-0.266-times-the-odds-of-a-center.-the-predicted-odds-of-being-a-small-forward-with-a-3-game-war-with-average-minutes-played-is-0.271-times-the-odds-of-a-center.-the-predicted-odds-of-being-a-shooting-guard-with-a-3-game-war-with-average-minutes-played-is-0.227-times-the-odds-of-a-center.-controlling-for-basketball-position-for-every-one-additional-minute-played-odds-of-being-a-player-with-a-3-game-war-being-responsible-for-3-additional-wins-above-the-expected-for-the-next-best-replacement-player-increases-by-a-factor-of-1.003." class="section level5">
+<h5>For a basketball player who has plays average minutes, the predicted odds of being a player with a WAR of 3 or higher (being responsible for 3 additional wins above the expected for a replacement player) for a Center is 2.0536. The predicted odds of being a Power Forward with a 3-game WAR with average minutes played is 0.174 times the odds of a Center. The predicted odds of being a Point Guard with a 3-game WAR with average minutes played is 0.266 times the odds of a Center. The predicted odds of being a Small Forward with a 3-game WAR with average minutes played is 0.271 times the odds of a Center. The predicted odds of being a Shooting Guard with a 3-game WAR with average minutes played is 0.227 times the odds of a Center. Controlling for basketball position, for every one additional minute played, odds of being a player with a 3-game WAR (being responsible for 3 additional wins above the expected for the next best replacement player) increases by a factor of 1.003.</h5>
+</div>
+<div id="after-a-confusion-matrix-was-made-the-accuracy-of-the-model-was-found-to-be-0.752.-the-sensitivity-of-the-model-also-known-as-the-true-positive-rate-was-found-to-be-0.640.-the-specificity-of-the-model-also-known-as-the-true-negative-rate-was-found-to-be-0.827.-the-precision-of-the-model-also-known-as-the-positive-predictive-value-was-found-to-be-0.711.-the-auc-of-the-model-or-the-area-under-the-curve-was-found-to-be-0.816-which-is-classified-as-a-good-auc." class="section level5">
+<h5>After a confusion matrix was made, the accuracy of the model was found to be 0.752. The sensitivity of the model, also known as the true positive rate, was found to be 0.640. The specificity of the model, also known as the true negative rate, was found to be 0.827. The precision of the model, also known as the positive predictive value was found to be 0.711. The AUC of the model, or the area under the curve, was found to be 0.816, which is classified as a &quot;good&quot; AUC.</h5>
+</div>
+</div>
+<div id="logistic-regression-model-cont." class="section level3">
+<h3>Logistic Regression Model Cont.</h3>
+<pre class="r"><code>fitrap2 &lt;- glm(y~offensiveraptor+defensiveraptor+totalraptor+team, data = raptordata, family = &quot;binomial&quot;)
+coeftest(fitrap2)</code></pre>
+<pre><code>##
+## z test of coefficients:
+##
+## Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept) -2.021876 1.158604 -1.7451 0.0809681 .
+## offensiveraptor 2.927102 8.539435 0.3428 0.7317680
+## defensiveraptor 2.179192 8.484381 0.2568 0.7972965
+## totalraptor 2.450062 8.584041 0.2854 0.7753219
+## teamBucks -0.791901 2.451574 -0.3230 0.7466821
+## teamBulls -3.711147 6.519011 -0.5693 0.5691657
+## teamCavaliers -20.219779 2441.503252 -0.0083 0.9933922
+## teamCeltics -2.505768 1.985531 -1.2620 0.2069438
+## teamClippers -0.951564 4.614681 -0.2062 0.8366318
+## teamGrizzlies -9.470435 2.786239 -3.3990 0.0006763 ***
+## teamHawks -3.962557 35.609834 -0.1113 0.9113967
+## teamHeat -0.038922 3.061343 -0.0127 0.9898560
+## teamHornets 1.717298 45.907859 0.0374 0.9701601
+## teamJazz -0.728880 2.839941 -0.2567 0.7974465
+## teamKings -4.117383 1.860468 -2.2131 0.0268914 *
+## teamKnicks -8.253407 7.368334 -1.1201 0.2626633
+## teamLakers -4.450137 3.568458 -1.2471 0.2123698
+## teamMagic 2.889403 3.441109 0.8397 0.4010922
+## teamMavericks -2.391647 1.580503 -1.5132 0.1302241
+## teamNets -5.435685 2.186363 -2.4862 0.0129124 *
+## teamNuggets 1.453743 3.854004 0.3772 0.7060226
+## teamPacers -1.730182 1.665816 -1.0386 0.2989726
+## teamPelicans -0.242248 1.975506 -0.1226 0.9024035
+## teamPistons -10.851811 65.618986 -0.1654 0.8686480
+## teamRaptors -0.012034 1.657685 -0.0073 0.9942079
+## teamRockets 2.272192 1.968110 1.1545 0.2482933
+## teamSpurs 0.592412 1.952719 0.3034 0.7616018
+## teamSuns -5.322217 2.205350 -2.4133 0.0158079 *
+## teamThunder -0.870448 3.186129 -0.2732 0.7847000
+## teamTimberwolves -14.845579 4806.210505 -0.0031
+0.9975355
+## teamTrail Blazers -0.739264 2.726292 -0.2712 0.7862671
+## teamWarriors -16.260535 3118.684185 -0.0052 0.9958399
+## teamWizards -4.994335 6.062081 -0.8239 0.4100164
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1</code></pre>
+<pre class="r"><code>exp(coef(fitrap2))</code></pre>
+<pre><code>## (Intercept) offensiveraptor defensiveraptor totalraptor
+teamBucks
+## 1.324068e-01 1.867344e+01 8.839163e+00 1.158907e+01
+4.529828e-01
+## teamBulls teamCavaliers teamCeltics teamClippers
+teamGrizzlies
+## 2.444947e-02 1.654480e-09 8.161288e-02 3.861366e-01
+7.709787e-05
+## teamHawks teamHeat teamHornets teamJazz teamKings
+## 1.901443e-02 9.618259e-01 5.569461e+00 4.824490e-01
+1.628708e-02
+## teamKnicks teamLakers teamMagic teamMavericks teamNets
+## 2.603700e-04 1.167697e-02 1.798258e+01 9.147892e-02
+4.358248e-03
+## teamNuggets teamPacers teamPelicans teamPistons
+teamRaptors
+## 4.279100e+00 1.772522e-01 7.848618e-01 1.936949e-05
+9.880383e-01
+## teamRockets teamSpurs teamSuns teamThunder
+teamTimberwolves
+## 9.700644e+00 1.808345e+00 4.881920e-03 4.187638e-01
+3.569825e-07
+## teamTrail Blazers teamWarriors teamWizards
+## 4.774650e-01 8.672400e-08 6.776224e-03</code></pre>
+<pre class="r"><code>coef(fitrap2) %&gt;% exp %&gt;% data.frame</code></pre>
+<pre><code>##                              .
+## (Intercept)       1.324068e-01
+## offensiveraptor   1.867344e+01
+## defensiveraptor   8.839163e+00
+## totalraptor       1.158907e+01
+## teamBucks         4.529828e-01
+## teamBulls         2.444947e-02
+## teamCavaliers     1.654480e-09
+## teamCeltics       8.161288e-02
+## teamClippers      3.861366e-01
+## teamGrizzlies     7.709787e-05
+## teamHawks         1.901443e-02
+## teamHeat          9.618259e-01
+## teamHornets       5.569461e+00
+## teamJazz          4.824490e-01
+## teamKings         1.628708e-02
+## teamKnicks        2.603700e-04
+## teamLakers        1.167697e-02
+## teamMagic         1.798258e+01
+## teamMavericks     9.147892e-02
+## teamNets          4.358248e-03
+## teamNuggets       4.279100e+00
+## teamPacers        1.772522e-01
+## teamPelicans      7.848618e-01
+## teamPistons       1.936949e-05
+## teamRaptors       9.880383e-01
+## teamRockets       9.700644e+00
+## teamSpurs         1.808345e+00
+## teamSuns          4.881920e-03
+## teamThunder       4.187638e-01
+## teamTimberwolves  3.569825e-07
+## teamTrail Blazers 4.774650e-01
+## teamWarriors      8.672400e-08
+## teamWizards       6.776224e-03</code></pre>
+<pre class="r"><code>prob2 &lt;- predict(fitrap2,type=&quot;response&quot;) 
+table(predict=as.numeric(prob2&gt;.5),truth=raptordata$y) %&gt;% addmargins</code></pre>
+<pre><code>##        truth
+## predict   0   1 Sum
+##     0   146   4 150
+##     1     4  96 100
+##     Sum 150 100 250</code></pre>
+<pre class="r"><code>class_diag(prob2,raptordata$y)</code></pre>
+<pre><code>##     acc sens      spec  ppv   f1       auc
+## 1 0.968 0.96 0.9733333 0.96 0.96 0.9933333</code></pre>
+<div id="after-running-the-logistic-regression-on-the-remaining-variables-offensiveraptor-defensiveraptor-totalraptor-and-nba-team-in-sample-classification-diagnostics-were-computed.-the-accuracy-of-the-model-was-0.968-the-sensitivity-of-the-model-was-0.960-the-specificity-of-the-model-was-0.973-the-precision-of-the-model-was-0.96-and-the-auc-area-under-the-curve-of-the-model-was-0.993.-all-of-these-were-high-values-indicating-that-the-model-predicts-whether-a-player-has-a-3-win-war-value-1-has-a-war-value-greater-than-3-0-has-a-war-value-less-3-or-less-very-well-within-the-sample.-the-high-accuracy-of-0.968-indicates-that-within-the-sample-the-model-correctly-predicts-true-positives-and-true-negatives-at-a-high-rate.-this-means-that-the-model-correctly-predicts-whether-the-player-has-a-winning-war-value-from-the-other-raptor-and-team-variables.-the-high-sensitivity-or-true-positive-rate-of-0.96-indicates-that-the-model-predicts-a-very-high-proportion-of-positives-correctly.-the-high-specificity-or-true-negative-rate-of-0.973-indicates-that-the-model-predicts-a-very-high-proportion-of-negatives-correctly.-the-high-precision-or-positive-predictive-value-of-0.96-indicates-that-there-is-a-high-fraction-of-positive-predictions-that-are-truly-positive.-the-auc-or-area-under-the-curve-is-extremely-high-indicating-that-it-predicts-the-data-within-the-sample-at-an-extremely-high-rate." class="section level5">
+<h5>After running the logistic regression on the remaining variables (offensiveraptor, defensiveraptor, totalraptor, and NBA team), in-sample classification diagnostics were computed. The accuracy of the model was 0.968, the sensitivity of the model was 0.960, the specificity of the model was 0.973, the precision of the model was 0.96, and the AUC (area under the curve) of the model was 0.993. All of these were high values, indicating that the model predicts whether a player has a 3-win WAR value (1 = has a WAR value greater than 3, 0 = has a WAR value less 3 or less) very well within the sample. The high accuracy of 0.968 indicates that within the sample, the model correctly predicts true positives and true negatives at a high rate. This means that the model correctly predicts whether the player has a winning WAR value from the other RAPTOR and team variables. The high sensitivity, or true positive rate, of 0.96, indicates that the model predicts a very high proportion of positives correctly. The high specificity, or true negative rate, of 0.973, indicates that the model predicts a very high proportion of negatives correctly. The high precision, or positive predictive value, of 0.96, indicates that there is a high fraction of positive predictions that are truly positive. The AUC, or area under the curve is extremely high, indicating that it predicts the data within the sample at an extremely high rate.</h5>
+<pre class="r"><code>set.seed(1234)
+k=10
+data&lt;-raptordata[sample(nrow(raptordata)),] 
+folds&lt;-cut(seq(1:nrow(raptordata)),breaks=k,labels=F) 
+diags&lt;-NULL
+for(i in 1:k){
+  train&lt;-data[folds!=i,]    
+  test&lt;-data[folds==i,]     
+  truth&lt;-test$y 
+  fitrap2&lt;-glm(y~offensiveraptor+defensiveraptor+totalraptor+team, data = train, family = &quot;binomial&quot;)
+  prob&lt;-predict(fitrap2,newdata = test,type=&quot;response&quot;) 
+  diags&lt;-rbind(diags,class_diag(prob,truth))
+}
+
+summarize_all(diags,mean)</code></pre>
+<pre><code>##     acc      sens      spec       ppv        f1      auc
+## 1 0.856 0.8087388 0.8902194 0.8216034 0.8081496 0.940332</code></pre>
+</div>
+<div id="a-10-fold-cross-validation-was-performed-to-determine-the-logistic-regression-models-ability-to-predict-war-classification-out-of-sample.-as-expected-all-of-the-classification-diagnostics-values-decreased-including-the-auc-decreasing-from-0.993-to-0.940.-the-0.940-auc-is-still-very-high-and-considered-great-but-does-reveal-overfitting-of-the-model-when-applied-to-out-of-sample-predictions.-the-rest-of-the-out-of-sample-predictions-gave-an-accuracy-of-0.856-a-sensitivity-of-0.809-a-specificity-of-0.890-and-a-precision-of-0.822." class="section level5">
+<h5>A 10-fold cross-validation was performed to determine the logistic regression model's ability to predict WAR classification out of sample. As expected, all of the classification diagnostics values decreased, including the AUC decreasing from 0.993 to 0.940. The 0.940 AUC is still very high and considered &quot;great&quot;, but does reveal overfitting of the model when applied to out-of-sample predictions. The rest of the out-of-sample predictions gave an accuracy of 0.856, a sensitivity of 0.809, a specificity of 0.890, and a precision of 0.822.</h5>
+<pre class="r"><code>library(glmnet)
+library(dplyr)
+set.seed(1234)
+
+rap_preds &lt;- model.matrix(y~offensiveraptor+defensiveraptor+totalraptor+team, data = raptordata)[,-1]
+rap_preds &lt;- scale(rap_preds)
+y &lt;- as.matrix(raptordata$y)
+cv &lt;- cv.glmnet(rap_preds, y, family=&quot;binomial&quot;)
+lasso_fit &lt;- glmnet(rap_preds, y, family=&quot;binomial&quot;, lambda = cv$lambda.1se)
+coef(lasso_fit)</code></pre>
+<pre><code>## 33 x 1 sparse Matrix of class &quot;dgCMatrix&quot;
+##                             s0
+## (Intercept)       -0.724818094
+## offensiveraptor    0.272905731
+## defensiveraptor    .          
+## totalraptor        3.443918296
+## teamBucks          .          
+## teamBulls          .          
+## teamCavaliers      .          
+## teamCeltics        .          
+## teamClippers       .          
+## teamGrizzlies     -0.250682159
+## teamHawks          .          
+## teamHeat           .          
+## teamHornets        .          
+## teamJazz           .          
+## teamKings          .          
+## teamKnicks         .          
+## teamLakers         .          
+## teamMagic          .          
+## teamMavericks      .          
+## teamNets           .          
+## teamNuggets        .          
+## teamPacers         .          
+## teamPelicans       .          
+## teamPistons        .          
+## teamRaptors        0.001437606
+## teamRockets        .          
+## teamSpurs          .          
+## teamSuns           .          
+## teamThunder        .          
+## teamTimberwolves   .          
+## teamTrail Blazers  .          
+## teamWarriors       .          
+## teamWizards        .</code></pre>
+<pre class="r"><code>prob3 &lt;- predict(lasso_fit, rap_preds, type=&quot;response&quot;)
+class_diag(prob3,raptordata$y)</code></pre>
+<pre><code>##    acc sens spec       ppv        f1   auc
+## 1 0.92 0.89 0.94 0.9081633 0.8989899 0.979</code></pre>
+<pre class="r"><code>table(predict=as.numeric(prob3&gt;.5),truth=raptordata$y) %&gt;% addmargins</code></pre>
+<pre><code>##        truth
+## predict   0   1 Sum
+##     0   141  11 152
+##     1     9  89  98
+##     Sum 150 100 250</code></pre>
+</div>
+<div id="after-performing-lasso-least-absolute-shrinkage-and-selection-operator-regularization-with-the-simplest-lambda-lamda.1se-that-yields-the-best-accuracy-the-most-important-and-predictive-variables-were-chosen.-these-turned-out-to-be-offensiveraptor-totalraptor-teamgrizzlies-and-teamraptors.-this-indicates-that-these-four-variables-are-the-most-predictive-of-a-players-relative-war-value-above-or-below-the-threshold-of-3-wins.-additionally-new-classification-diagnostics-were-calculated.-the-accuracy-of-the-lasso-model-was-0.92-the-sensitivity-was-0.89-the-specificity-was-0.94-the-precision-was-0.908-and-the-auc-was-0.979." class="section level5">
+<h5>After performing LASSO (Least Absolute Shrinkage and Selection Operator) regularization with the simplest lambda (lamda.1se) that yields the best accuracy, the most important and predictive variables were chosen. These turned out to be offensiveraptor, totalraptor, teamGrizzlies, and teamRaptors. This indicates that these four variables are the most predictive of a player's relative WAR value (above or below the threshold of 3 wins). Additionally, new classification diagnostics were calculated. The accuracy of the LASSO model was 0.92, the sensitivity was 0.89, the specificity was 0.94, the precision was 0.908, and the AUC was 0.979.</h5>
+<pre class="r"><code>rap_preds2 &lt;- model.matrix(y~offensiveraptor+defensiveraptor+totalraptor+team, data = raptordata)[,-1]
+raptor1 &lt;- data.frame(rap_preds2, y = raptordata$y)
+
+set.seed(1234)
+k=10
+data&lt;-raptor1[sample(nrow(raptor1)),] 
+folds&lt;-cut(seq(1:nrow(raptor1)),breaks=k,labels=F) 
+diags&lt;-NULL
+for(i in 1:k){
+  train&lt;-data[folds!=i,]    
+  test&lt;-data[folds==i,]     
+  truth&lt;-test$y 
+  fitrap3&lt;-glm(y~offensiveraptor+totalraptor+teamGrizzlies+teamRaptors, data = train, family = &quot;binomial&quot;)
+  prob &lt;- predict(fitrap3, newdata = test, type=&quot;response&quot;)
+  diags&lt;-rbind(diags,class_diag(prob,truth))
+}
+
+summarize_all(diags,mean)</code></pre>
+<pre><code>##    acc      sens      spec       ppv        f1       auc
+## 1 0.92 0.8965501 0.9320355 0.8743182 0.8833348 0.9716168</code></pre>
+</div>
+<div id="using-only-the-4-variables-that-lasso-identified-another-10-fold-cross-validation-was-ran-on-the-model.-this-essentially-tests-the-out-of-sample-predictive-value-of-the-logistic-regression-model-when-only-considering-the-most-important-predictors-of-offensiveraptor-totalraptor-teamgrizzlies-and-teamraptors.-the-auc-was-calculated-to-be-0.972-which-is-greater-than-the-auc-of-the-original-out-of-sample-cv-with-all-the-variables-considered-which-was-0.94.-the-auc-of-the-lasso-out-of-sample-model-was-less-than-the-auc-of-the-in-sample-predictive-model-which-was-0.9933-and-the-lasso-in-sample-model-which-was-0.979." class="section level5">
+<h5>Using only the 4 variables that LASSO identified, another 10-fold cross-validation was ran on the model. This essentially tests the out-of-sample predictive value of the logistic regression model when only considering the &quot;most important&quot; predictors of offensiveraptor, totalraptor, teamGrizzlies, and teamRaptors. The AUC was calculated to be 0.972, which is greater than the AUC of the original out-of-sample CV (with all the variables considered) which was 0.94. The AUC of the LASSO out-of-sample model was less than the AUC of the in-sample predictive model, which was 0.9933, and the LASSO in-sample model, which was 0.979.</h5>
+</div>
+</div>
+
+              <hr>
+              <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+              </div>
+            </div>
+          </div>
+          <hr>
+        <div class="disqus">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+
+    (function() {
+      
+      
+      if (window.location.hostname == "localhost")
+        return;
+
+      var disqus_shortname = '';
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+        </div>
+      </div>
+      
+    </div>
+
+    
+    <footer>
+  <div id="footer">
+    <div class="container">
+      <p class="text-muted">&copy; All rights reserved. Powered by <a href="https://gohugo.io/">Hugo</a> and
+      <a href="http://www.github.com/nurlansu/hugo-sustain/">sustain</a> with ♥</p>
+    </div>
+  </div>
+</footer>
+<div class="footer"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="../js/docs.min.js"></script>
+<script src="../js/main.js"></script>
+
+<script src="../js/ie10-viewport-bug-workaround.js"></script>
+
+
+    
+  </body>
+</html>
