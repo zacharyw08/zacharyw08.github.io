@@ -1,5 +1,5 @@
 ---
-title: Python and Reticulate
+title: Python Code and Output
 author: Zachary Wong
 date: '2020-12-01'
 slug: my-first-blog-post
@@ -10,19 +10,13 @@ description: ''
 
 ####Hello there,
 
-This is my first blog post on this project. It contains python code and output, as well as a demonstration with reticulate that shows how R and python can share information with each other across code chunks.
+This is my first blog post on this project. It contains python code and output.
 
 ###Python
 ```{python}
 string="mystring yay!"
 import re
 re.findall(r"y",string)
-
-```
-
-
-###Reticulate
-```{r}
 
 ```
 

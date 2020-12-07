@@ -1,0 +1,21 @@
+---
+title: Reticulate Between R and Python
+author: Zachary Wong
+date: '2020-12-07'
+slug: my-second-blog-post
+categories: []
+tags: []
+description: ''
+---
+
+This is my second blog post for this project. It contains a demonstration of reticulate that shows how R and python can share information with each other across code chunks.
+
+###Reticulate
+```{r}
+
+```
+
+```{python}
+
+```
+

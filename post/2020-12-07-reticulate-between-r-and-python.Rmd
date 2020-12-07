@@ -1,0 +1,9 @@
+---
+title: Reticulate Between R and Python
+author: ''
+date: '2020-12-07'
+slug: reticulate-between-r-and-python
+categories: []
+tags: []
+description: ''
+---
