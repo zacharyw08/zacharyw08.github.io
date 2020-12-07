@@ -31,8 +31,8 @@
       <pubDate>Tue, 01 Dec 2020 00:00:00 +0000</pubDate>
       
       <guid>/post/2020/12/01/my-first-blog-post/</guid>
-      <description> Hello there, This is my first blog post on this project. It contains python code and output.
- Python string=&amp;quot;mystring yay!&amp;quot; import re re.findall(r&amp;quot;y&amp;quot;,string) ## [&amp;#39;y&amp;#39;, &amp;#39;y&amp;#39;, &amp;#39;y&amp;#39;]  Dog Picture Enjoy this picture of my dog posing with some bluebonnets!  </description>
+      <description>Hello there, This is my first blog post on this project. It contains python code and output.
+ Python string=&amp;quot;mystring yay!&amp;quot; import re re.findall(r&amp;quot;y&amp;quot;,string) ## [&amp;#39;y&amp;#39;, &amp;#39;y&amp;#39;, &amp;#39;y&amp;#39;] import re string1=&amp;quot;We have to extract these numbers 12, 47, 48 The integers numbers are also interesting: 189 2036 314\&amp;#39;,\&amp;#39; is a separator, so please extract these numbers 125,789,1450 and also these 564,90456 We like to offer you 7890$ per month in order to complete this task.</description>
     </item>
     
     <item>
