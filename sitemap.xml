@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>/resume/</loc>
+    <lastmod>2020-12-07T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>/post/</loc>
     <lastmod>2020-12-01T00:00:00+00:00</lastmod>
   </url>
@@ -80,10 +85,6 @@
   <url>
     <loc>/post/2014/09/28/creating-a-new-theme/</loc>
     <lastmod>2014-09-28T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/resume/</loc>
   </url>
   
 </urlset>
