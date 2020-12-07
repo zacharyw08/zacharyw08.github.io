@@ -2,6 +2,7 @@
 title: 'SDS 348 Project 1: NBA Player Efficiency and Salaries '
 author: "SDS348"
 date: '2020-10-03'
+hiderelated: true
 output:
   pdf_document: default
   html_document: default

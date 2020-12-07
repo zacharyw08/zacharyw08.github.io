@@ -2,6 +2,7 @@
 title: 'SDS 348 Project 2: Modeling, Testing, and Predicting NBA RAPTOR Scores'
 author: "SDS348"
 date: '2020-11-22'
+hiderelated: true
 output:
   html_document: default
   pdf_document: default
