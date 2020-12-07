@@ -13,7 +13,7 @@
       <pubDate>Tue, 01 Dec 2020 00:00:00 +0000</pubDate>
       
       <guid>/post/2020/12/01/my-first-blog-post/</guid>
-      <description> Hello there! This is my first blog post on this project. It contains python code and output.
+      <description> Hello there, This is my first blog post on this project. It contains python code and output, as well as a demonstration with reticulate that shows how R and python can share information with each other across code chunks.
  Python string=&amp;quot;mystring yay!&amp;quot; import re re.findall(r&amp;quot;y&amp;quot;,string) ## [&amp;#39;y&amp;#39;, &amp;#39;y&amp;#39;, &amp;#39;y&amp;#39;]  Reticulate  Dog Picture Enjoy this picture of my dog posing with some bluebonnets!  </description>
     </item>
     
