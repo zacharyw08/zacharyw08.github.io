@@ -1,5 +1,5 @@
 ---
-title: My first blog post
+title: My First Blog Post
 author: Zachary
 date: '2020-12-01'
 slug: my-first-blog-post
@@ -8,9 +8,10 @@ tags: []
 description: ''
 ---
 
-#Hello there
+###Hello there!
 
-This is my first blog post on this project
+This is my first blog post on this project. It contains some basic code in both R and python.
+
 
 ```{r}
 hist(iris$Sepal.Length)
@@ -20,6 +21,9 @@ hist(iris$Sepal.Length)
 string="mystring yay!"
 import re
 re.findall(r"y",string)
+
 ```
 
+
+Enjoy this picture of my dog posing with some bluebonnets!
 ![](/post/2020-12-01-my-first-blog-post_files/IMG_9489.JPG){width=50%}

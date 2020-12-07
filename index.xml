@@ -8,13 +8,13 @@
     <language>en-US</language>
     <lastBuildDate>Tue, 01 Dec 2020 00:00:00 +0000</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>My first blog post</title>
+      <title>My First Blog Post</title>
       <link>/post/2020/12/01/my-first-blog-post/</link>
       <pubDate>Tue, 01 Dec 2020 00:00:00 +0000</pubDate>
       
       <guid>/post/2020/12/01/my-first-blog-post/</guid>
-      <description> Hello there This is my first blog post on this project
-hist(iris$Sepal.Length) string=&amp;quot;mystring yay!&amp;quot; import re re.findall(r&amp;quot;y&amp;quot;,string) ## [&amp;#39;y&amp;#39;, &amp;#39;y&amp;#39;, &amp;#39;y&amp;#39;]   </description>
+      <description> Hello there! This is my first blog post on this project. It contains some basic code in both R and python.
+hist(iris$Sepal.Length) string=&amp;quot;mystring yay!&amp;quot; import re re.findall(r&amp;quot;y&amp;quot;,string) ## [&amp;#39;y&amp;#39;, &amp;#39;y&amp;#39;, &amp;#39;y&amp;#39;] Enjoy this picture of my dog posing with some bluebonnets!  </description>
     </item>
     
     <item>
