@@ -1,5 +1,5 @@
 ---
-title: My First Blog Post
+title: Python and Reticulate
 author: Zachary
 date: '2020-12-01'
 slug: my-first-blog-post
@@ -10,13 +10,9 @@ description: ''
 
 ###Hello there!
 
-This is my first blog post on this project. It contains some basic code in both R and python.
+This is my first blog post on this project. It contains python code and output.
 
-
-```{r}
-hist(iris$Sepal.Length)
-```
-
+###Python
 ```{python}
 string="mystring yay!"
 import re
@@ -24,6 +20,16 @@ re.findall(r"y",string)
 
 ```
 
+###Reticulate
+```{r}
 
+```
+
+```{python}
+
+```
+
+
+###Dog Picture
 Enjoy this picture of my dog posing with some bluebonnets!
 ![](/post/2020-12-01-my-first-blog-post_files/IMG_9489.JPG){width=50%}
