@@ -7,3 +7,48 @@ categories: []
 tags: []
 description: ''
 ---
+
+####Hello there,
+
+This is my second blog post on this project. It demonstrates the reticulate function that allows R and python to talk to each other and communicate across code chunks. I use the reticulate function on some data from my projects!
+
+###R
+```{R}
+library(reticulate)
+library(readr)
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+raptor <- read_csv("raptordata_positions.csv")
+head(raptor)
+```
+
+###Python
+```{python}
+import numpy as np
+import pandas as pd
+r.raptor.head()
+np.mean(r.raptor.totalraptor)
+np.mean(r.raptor[r.raptor.minutes>2200].war)
+```
+
+```{python}
+import seaborn as sns
+iris = sns.load_dataset('iris')
+iris.to_csv("iris.csv")
+iris.head()
+type(iris)
+np.mean(iris.sepal_length)
+```
+
+###R
+```{R}
+head(py$iris)
+py$iris %>% ggplot(aes(x=sepal_length,y=petal_width,color=species)) + geom_point() + ggtitle("Iris Sepal Length vs. Petal Width") + xlab("Sepal Length") + ylab("Petal Width")
+
+py$iris %>% ggplot(aes(x=species,y=sepal_width,color=species)) + geom_boxplot() + ggtitle("Iris Sepal Width Across Species") + xlab("Species of Iris") + ylab("Sepal Width")
+```
+
+###Sunset picture
+Here is a picture I took freshman year from my dorm room of the beautiful Austin sunset!
+![](/post/2020-12-07-reticulate-between-r-and-python_files/IMG_0602.PNG){width=50%}
