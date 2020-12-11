@@ -12,6 +12,8 @@ description: ''
 
 This is my second blog post on this project. It demonstrates the reticulate function that allows R and python to talk to each other and communicate across code chunks. I use the reticulate function on some data from my projects!
 
+##R to Python
+
 ###R
 ```{R}
 library(reticulate)
@@ -30,8 +32,23 @@ import pandas as pd
 r.raptor.head()
 np.mean(r.raptor.totalraptor)
 np.mean(r.raptor[r.raptor.minutes>2200].war)
+np.std(r.raptor[r.raptor.minutes>2200].totalraptor)
+
+#import matplotlib.pyplot as plt
+#x=np.mean(r.raptor.offensiveraptor)
+#y=np.mean(r.raptor.defensiveraptor)
+#plt.scatter(x,y, color="red", alpha=.5)
+#plt.xlabel('Offensive Raptor (points)')
+#plt.ylabel('Defensive Raptor (points)')
+#plt.title('Offensive Raptor vs. Defensive Raptor for NBA Players')
+#plt.show()
 ```
 
+
+
+##Python to R
+
+###Python
 ```{python}
 import seaborn as sns
 iris = sns.load_dataset('iris')
@@ -44,6 +61,9 @@ np.mean(iris.sepal_length)
 ###R
 ```{R}
 head(py$iris)
+py$iris %>% group_by(species) %>% summarize_all(n_distinct)
+py$iris %>% filter(species=="setosa") %>% summarize_if(is.numeric,mean) 
+
 py$iris %>% ggplot(aes(x=sepal_length,y=petal_width,color=species)) + geom_point() + ggtitle("Iris Sepal Length vs. Petal Width") + xlab("Sepal Length") + ylab("Petal Width")
 
 py$iris %>% ggplot(aes(x=species,y=sepal_width,color=species)) + geom_boxplot() + ggtitle("Iris Sepal Width Across Species") + xlab("Species of Iris") + ylab("Sepal Width")

@@ -14,7 +14,7 @@
       
       <guid>/post/2020/12/07/reticulate-between-r-and-python/</guid>
       <description>Hello there, This is my second blog post on this project. It demonstrates the reticulate function that allows R and python to talk to each other and communicate across code chunks. I use the reticulate function on some data from my projects!
- R library(reticulate) library(readr) library(tidyverse) ## ── Attaching packages ──────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ── ## ✓ ggplot2 3.3.2 ✓ dplyr 1.0.1 ## ✓ tibble 3.0.3 ✓ stringr 1.4.0 ## ✓ tidyr 1.</description>
+ R to Python R library(reticulate) library(readr) library(tidyverse) ## ── Attaching packages ──────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ── ## ✓ ggplot2 3.3.2 ✓ dplyr 1.0.1 ## ✓ tibble 3.0.3 ✓ stringr 1.</description>
     </item>
     
     <item>
